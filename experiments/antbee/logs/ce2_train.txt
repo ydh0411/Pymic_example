@@ -1,0 +1,175 @@
+The running configuations are:
+[dataset]
+tensor_type = float
+task_type = TaskType.CLASSIFICATION_ONE_HOT
+root_dir = ../../PyMIC_data/hymenoptera_data
+train_csv = config/train_data.csv
+valid_csv = config/valid_data.csv
+test_csv = config/valid_data.csv
+train_batch_size = 4
+modal_num = 1
+train_transform = ['Rescale', 'RandomCrop', 'RandomFlip', 'NormalizeWithMeanStd', 'LabelToProbability']
+valid_transform = ['Rescale', 'CenterCrop', 'NormalizeWithMeanStd', 'LabelToProbability']
+test_transform = ['Rescale', 'CenterCrop', 'NormalizeWithMeanStd']
+rescale_output_size = [256, 256]
+randomcrop_output_size = [224, 224]
+centercrop_output_size = [224, 224]
+randomflip_flip_depth = False
+randomflip_flip_height = False
+randomflip_flip_width = True
+normalizewithmeanstd_channels = [0, 1, 2]
+normalizewithmeanstd_mean = [123.675, 116.28, 103.53]
+normalizewithmeanstd_std = [58.395, 57.12, 57.375]
+labeltoprobability_class_num = 2
+[network]
+net_type = resnet18
+pretrain = True
+input_chns = 3
+update_mode = last
+class_num = 2
+[training]
+gpus = [0]
+loss_type = CrossEntropyLoss
+optimizer = SGD
+learning_rate = 0.001
+momentum = 0.9
+weight_decay = 1e-05
+lr_scheduler = StepLR
+lr_gamma = 0.5
+lr_step = 500
+ckpt_dir = model/resnet18_ce2
+ckpt_prefix = resnet18
+iter_max = 2000
+iter_valid = 100
+iter_save = 2000
+early_stop_patience = 1000
+[testing]
+gpus = [0]
+ckpt_mode = 1
+output_dir = result
+output_csv = resnet18_ce2.csv
+save_probability = True
+deterministric is true
+parameter number 11177538
+2026-07-13 14:47:07 training start
+
+2026-07-13 14:48:39 it 100
+learning rate 0.001
+training/validation time: 48.92s/43.69s
+train loss 0.5746, avg accuracy 0.7225
+valid loss 0.4279, avg accuracy 0.7778
+
+2026-07-13 14:50:53 it 200
+learning rate 0.001
+training/validation time: 89.81s/44.12s
+train loss 0.5262, avg accuracy 0.7800
+valid loss 0.3039, avg accuracy 0.8693
+
+2026-07-13 14:52:23 it 300
+learning rate 0.001
+training/validation time: 45.88s/43.93s
+train loss 0.5027, avg accuracy 0.8050
+valid loss 0.3106, avg accuracy 0.8693
+
+2026-07-13 14:54:35 it 400
+learning rate 0.001
+training/validation time: 88.14s/44.01s
+train loss 0.5358, avg accuracy 0.7600
+valid loss 0.2196, avg accuracy 0.9412
+
+2026-07-13 14:56:48 it 500
+learning rate 0.001
+training/validation time: 88.63s/44.07s
+train loss 0.4484, avg accuracy 0.8100
+valid loss 0.2022, avg accuracy 0.9216
+
+2026-07-13 14:58:18 it 600
+learning rate 0.0005
+training/validation time: 45.93s/43.65s
+train loss 0.4245, avg accuracy 0.8150
+valid loss 0.2107, avg accuracy 0.9216
+
+2026-07-13 15:00:31 it 700
+learning rate 0.0005
+training/validation time: 88.84s/43.87s
+train loss 0.4621, avg accuracy 0.8200
+valid loss 0.2134, avg accuracy 0.9216
+
+2026-07-13 15:02:44 it 800
+learning rate 0.0005
+training/validation time: 89.03s/44.38s
+train loss 0.4240, avg accuracy 0.8350
+valid loss 0.4740, avg accuracy 0.8301
+
+2026-07-13 15:04:15 it 900
+learning rate 0.0005
+training/validation time: 46.44s/44.55s
+train loss 0.3881, avg accuracy 0.8425
+valid loss 0.2216, avg accuracy 0.8954
+
+2026-07-13 15:06:28 it 1000
+learning rate 0.0005
+training/validation time: 88.60s/44.05s
+train loss 0.4234, avg accuracy 0.8425
+valid loss 0.2325, avg accuracy 0.9085
+
+2026-07-13 15:08:40 it 1100
+learning rate 0.00025
+training/validation time: 88.48s/43.95s
+train loss 0.4529, avg accuracy 0.8250
+valid loss 0.2266, avg accuracy 0.9085
+
+2026-07-13 15:10:12 it 1200
+learning rate 0.00025
+training/validation time: 46.26s/45.74s
+train loss 0.4041, avg accuracy 0.8500
+valid loss 0.2333, avg accuracy 0.9085
+
+2026-07-13 15:12:25 it 1300
+learning rate 0.00025
+training/validation time: 89.16s/44.00s
+train loss 0.4171, avg accuracy 0.8450
+valid loss 0.2463, avg accuracy 0.9020
+
+2026-07-13 15:14:37 it 1400
+learning rate 0.00025
+training/validation time: 87.98s/44.08s
+train loss 0.4152, avg accuracy 0.8275
+valid loss 0.1973, avg accuracy 0.9412
+
+2026-07-13 15:16:08 it 1500
+learning rate 0.00025
+training/validation time: 46.28s/44.37s
+train loss 0.4217, avg accuracy 0.8425
+valid loss 0.1977, avg accuracy 0.9477
+
+2026-07-13 15:18:21 it 1600
+learning rate 0.000125
+training/validation time: 88.85s/44.37s
+train loss 0.4869, avg accuracy 0.7925
+valid loss 0.2435, avg accuracy 0.9020
+
+2026-07-13 15:20:36 it 1700
+learning rate 0.000125
+training/validation time: 90.20s/44.08s
+train loss 0.4250, avg accuracy 0.8275
+valid loss 0.2272, avg accuracy 0.9085
+
+2026-07-13 15:22:06 it 1800
+learning rate 0.000125
+training/validation time: 46.38s/43.89s
+train loss 0.4363, avg accuracy 0.8225
+valid loss 0.2187, avg accuracy 0.9085
+
+2026-07-13 15:24:19 it 1900
+learning rate 0.000125
+training/validation time: 88.63s/43.84s
+train loss 0.3977, avg accuracy 0.8575
+valid loss 0.2375, avg accuracy 0.9150
+
+2026-07-13 15:26:32 it 2000
+learning rate 0.000125
+training/validation time: 89.03s/44.44s
+train loss 0.3659, avg accuracy 0.8750
+valid loss 0.2219, avg accuracy 0.9150
+The best perfroming iter is 1500, valid accuracy 0.9477124214172363

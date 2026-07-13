@@ -1,0 +1,246 @@
+diff --git a/pymic/net_run/agent_abstract.py b/pymic/net_run/agent_abstract.py
+index be24b41..99663e7 100644
+--- a/pymic/net_run/agent_abstract.py
++++ b/pymic/net_run/agent_abstract.py
+@@ -10,6 +10,29 @@ import torch.optim as optim
+ from abc import ABCMeta, abstractmethod
+ from pymic.net_run.get_optimizer import get_lr_scheduler, get_optimizer
+ 
++
++def get_device(device_ids=None, device_name="auto"):
++    """Select a PyTorch device while keeping legacy ``gpus`` configs working."""
++    device_ids = [] if device_ids is None else device_ids
++    device_name = device_name.lower()
++    if device_name == "auto":
++        if torch.cuda.is_available() and len(device_ids) > 0:
++            return torch.device("cuda:{0:}".format(device_ids[0]))
++        if torch.backends.mps.is_available():
++            return torch.device("mps")
++        return torch.device("cpu")
++    if device_name == "cuda":
++        if not torch.cuda.is_available() or len(device_ids) == 0:
++            raise RuntimeError("CUDA was requested but no CUDA GPU is available")
++        return torch.device("cuda:{0:}".format(device_ids[0]))
++    if device_name == "mps":
++        if not torch.backends.mps.is_available():
++            raise RuntimeError("MPS was requested but is not available")
++        return torch.device("mps")
++    if device_name == "cpu":
++        return torch.device("cpu")
++    raise ValueError("device must be one of: auto, cuda, mps, cpu")
++
+ def seed_torch(seed=1):
+     """
+     Set random seed.
+@@ -343,4 +366,3 @@ class NetRunAgent(object):
+             self.train_valid()
+         else:
+             self.infer()
+-
+diff --git a/pymic/net_run/agent_cls.py b/pymic/net_run/agent_cls.py
+index 728f805..1b45b30 100644
+--- a/pymic/net_run/agent_cls.py
++++ b/pymic/net_run/agent_cls.py
+@@ -18,7 +18,7 @@ from pymic.io.nifty_dataset import ClassificationDataset
+ from pymic.loss.loss_dict_cls import PyMICClsLossDict
+ from pymic.net.net_dict_cls import TorchClsNetDict
+ from pymic.transform.trans_dict import TransformDict
+-from pymic.net_run.agent_abstract import NetRunAgent
++from pymic.net_run.agent_abstract import NetRunAgent, get_device
+ from pymic.util.general import mixup, tensor_shape_match
+ import warnings
+ warnings.filterwarnings('ignore', '.*output shape of zoom.*')
+@@ -167,7 +167,7 @@ class ClassificationAgent(NetRunAgent):
+             running_score+= self.get_evaluation_score(outputs, labels) * labels.size(0)
+ 
+         avg_loss = running_loss / sample_num
+-        avg_score= running_score.double() / sample_num
++        avg_score= running_score.float() / sample_num
+         metrics =self.config['training'].get("evaluation_metric", "accuracy")
+         train_scalers = {'loss': avg_loss, metrics: avg_score}
+         return train_scalers
+@@ -194,7 +194,7 @@ class ClassificationAgent(NetRunAgent):
+                 running_score+= self.get_evaluation_score(outputs, labels) * labels.size(0)
+ 
+         avg_loss = running_loss / sample_num
+-        avg_score= running_score.double() / sample_num
++        avg_score= running_score.float() / sample_num
+         metrics  = self.config['training'].get("evaluation_metric", "accuracy")
+         valid_scalers = {'loss': avg_loss, metrics: avg_score}
+         return valid_scalers
+@@ -235,11 +235,10 @@ class ClassificationAgent(NetRunAgent):
+ 
+     def train_valid(self):
+         device_ids = self.config['training']['gpus']
+-        if(len(device_ids) > 1):
+-            self.device = torch.device("cuda:0")
++        device_name = self.config['training'].get('device', 'auto')
++        self.device = get_device(device_ids, device_name)
++        if(self.device.type == 'cuda' and len(device_ids) > 1):
+             self.net = nn.DataParallel(self.net, device_ids = device_ids)
+-        else:
+-            self.device = torch.device("cuda:{0:}".format(device_ids[0]))
+         self.net.to(self.device)
+ 
+         ckpt_dir    = self.config['training']['ckpt_dir']
+@@ -342,7 +341,8 @@ class ClassificationAgent(NetRunAgent):
+ 
+     def infer(self):
+         device_ids = self.config['testing']['gpus']
+-        device = torch.device("cuda:{0:}".format(device_ids[0]))
++        device_name = self.config['testing'].get('device', 'auto')
++        device = get_device(device_ids, device_name)
+         self.net.to(device)
+         # load network parameters and set the network as evaluation mode
+         checkpoint_name = self.get_checkpoint_name()
+@@ -407,4 +407,3 @@ class ClassificationAgent(NetRunAgent):
+         time_avg = infer_time_list.mean()
+         time_std = infer_time_list.std()
+         print("testing time {0:} +/- {1:}".format(time_avg, time_std))
+-
+diff --git a/pymic/net_run/predict.py b/pymic/net_run/predict.py
+index d63cbad..65185d0 100644
+--- a/pymic/net_run/predict.py
++++ b/pymic/net_run/predict.py
+@@ -8,8 +8,6 @@ from datetime import datetime
+ from pymic import TaskType
+ from pymic.util.parse_config import *
+ from pymic.net_run.agent_cls import ClassificationAgent
+-from pymic.net_run.agent_seg import SegmentationAgent
+-from pymic.net_run.agent_rec import ReconstructionAgent
+ 
+ def main():
+     """
+@@ -58,8 +56,10 @@ def main():
+     if(task == TaskType.CLASSIFICATION_ONE_HOT or task == TaskType.CLASSIFICATION_COEXIST):
+         agent = ClassificationAgent(config, 'test')
+     elif(task == TaskType.SEGMENTATION):
++        from pymic.net_run.agent_seg import SegmentationAgent
+         agent = SegmentationAgent(config, 'test')
+     elif(task == TaskType.RECONSTRUCTION):
++        from pymic.net_run.agent_rec import ReconstructionAgent
+         agent = ReconstructionAgent(config, 'test')
+     else:
+         raise ValueError("Undefined task for inference: {0:}".format(task))
+@@ -68,4 +68,3 @@ def main():
+ if __name__ == "__main__":
+     main()
+     
+-
+diff --git a/pymic/net_run/train.py b/pymic/net_run/train.py
+index cdc3a3c..33b087b 100644
+--- a/pymic/net_run/train.py
++++ b/pymic/net_run/train.py
+@@ -9,34 +9,34 @@ from datetime import datetime
+ from pymic import TaskType
+ from pymic.util.parse_config import *
+ from pymic.net_run.agent_cls import ClassificationAgent
+-from pymic.net_run.agent_seg import SegmentationAgent
+-from pymic.net_run.agent_rec import ReconstructionAgent
+-from pymic.net_run.semi_sup import SSLMethodDict
+-from pymic.net_run.weak_sup import WSLMethodDict
+-from pymic.net_run.self_sup import SelfSupMethodDict
+-from pymic.net_run.noisy_label import NLLMethodDict
+ 
+ def get_seg_rec_agent(config, sup_type):
+     assert(sup_type in ['fully_sup', 'semi_sup', 'self_sup', 'weak_sup', 'noisy_label'])
+     if(sup_type == 'fully_sup'):
++        from pymic.net_run.agent_seg import SegmentationAgent
++        from pymic.net_run.agent_rec import ReconstructionAgent
+         logging.info("\n********** Fully Supervised Learning **********\n")
+         if config['dataset']['task_type'] == TaskType.SEGMENTATION:
+             agent = SegmentationAgent(config, 'train')
+         else:
+             agent = ReconstructionAgent(config, 'train')
+     elif(sup_type == 'semi_sup'):
++        from pymic.net_run.semi_sup import SSLMethodDict
+         logging.info("\n********** Semi Supervised Learning **********\n")
+         method = config['semi_supervised_learning']['method_name']
+         agent = SSLMethodDict[method](config, 'train')
+     elif(sup_type == 'weak_sup'):
++        from pymic.net_run.weak_sup import WSLMethodDict
+         logging.info("\n********** Weakly Supervised Learning **********\n")
+         method = config['weakly_supervised_learning']['method_name']
+         agent = WSLMethodDict[method](config, 'train')
+     elif(sup_type == 'noisy_label'):
++        from pymic.net_run.noisy_label import NLLMethodDict
+         logging.info("\n********** Noisy Label Learning **********\n")
+         method = config['noisy_label_learning']['method_name']
+         agent = NLLMethodDict[method](config, 'train')
+     elif(sup_type == 'self_sup'):
++        from pymic.net_run.self_sup import SelfSupMethodDict
+         logging.info("\n********** Self Supervised Learning **********\n")
+         method = config['self_supervised_learning']['method_name']
+         agent = SelfSupMethodDict[method](config, 'train')
+@@ -96,4 +96,3 @@ def main():
+ if __name__ == "__main__":
+     main()
+     
+-
+diff --git a/pymic/transform/crop4vf.py b/pymic/transform/crop4vf.py
+index 4e07357..4e7b703 100644
+--- a/pymic/transform/crop4vf.py
++++ b/pymic/transform/crop4vf.py
+@@ -7,7 +7,6 @@ import json
+ import math
+ import random
+ import numpy as np
+-from imops import crop_to_box
+ from typing import *
+ from scipy import ndimage
+ from pymic import TaskType
+@@ -229,4 +228,3 @@ class VolumeFusionShuffle(AbstractTransform):
+         sample['image'] = x_fuse 
+         sample['label'] = mask 
+         return sample 
+-
+diff --git a/pymic/transform/crop4vox2vec.py b/pymic/transform/crop4vox2vec.py
+index 6fdcf83..83e21a0 100644
+--- a/pymic/transform/crop4vox2vec.py
++++ b/pymic/transform/crop4vox2vec.py
+@@ -7,7 +7,6 @@ import json
+ import math
+ import random
+ import numpy as np
+-from imops import crop_to_box
+ from typing import *
+ from scipy import ndimage
+ from pymic import TaskType
+diff --git a/pymic/transform/crop4voxMMSD.py b/pymic/transform/crop4voxMMSD.py
+index 757d307..1cac163 100644
+--- a/pymic/transform/crop4voxMMSD.py
++++ b/pymic/transform/crop4voxMMSD.py
+@@ -7,7 +7,6 @@ import json
+ import math
+ import random
+ import numpy as np
+-from imops import crop_to_box
+ from typing import *
+ from scipy import ndimage
+ from pymic import TaskType
+diff --git a/pymic/util/evaluation_cls.py b/pymic/util/evaluation_cls.py
+index 686a811..905e1ee 100644
+--- a/pymic/util/evaluation_cls.py
++++ b/pymic/util/evaluation_cls.py
+@@ -176,7 +176,7 @@ def main():
+     :param pred_prob_csv: (str) The csv file for prediction probability.
+     """
+     parser = argparse.ArgumentParser()
+-    parser.add_argument("--cfg", help="configuration file for evaluation", 
++    parser.add_argument("-cfg", "--cfg", help="configuration file for evaluation", 
+                         required=False, default=None)
+     parser.add_argument("--metric", help="evaluation metrics, e.g., accuracy, or [accuracy, auc]", 
+                         required=False, default=None)
+diff --git a/pymic/util/parse_config.py b/pymic/util/parse_config.py
+index 525649e..891560b 100644
+--- a/pymic/util/parse_config.py
++++ b/pymic/util/parse_config.py
+@@ -51,6 +51,8 @@ def is_list(val_str):
+         return False
+     
+ def parse_list(val_str):
++    if(val_str.strip() == ''):
++        return []
+     if('[' in val_str):
+         splits = val_str.split('],')
+         output = []
