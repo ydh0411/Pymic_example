@@ -1,0 +1,223 @@
+The running configuations are:
+[dataset]
+tensor_type = float
+task_type = TaskType.CLASSIFICATION_ONE_HOT
+root_dir = ../../PyMIC_data/CHNCXR/CXR_png
+train_csv = config/cxr_train.csv
+valid_csv = config/cxr_valid.csv
+test_csv = config/cxr_test.csv
+train_batch_size = 4
+modal_num = 1
+train_transform = ['Rescale', 'RandomCrop', 'RandomFlip', 'GrayscaleToRGB', 'NormalizeWithMeanStd', 'LabelToProbability']
+valid_transform = ['Rescale', 'CenterCrop', 'GrayscaleToRGB', 'NormalizeWithMeanStd', 'LabelToProbability']
+test_transform = ['Rescale', 'CenterCrop', 'GrayscaleToRGB', 'NormalizeWithMeanStd']
+rescale_output_size = [256, 256]
+randomcrop_output_size = [224, 224]
+centercrop_output_size = [224, 224]
+randomflip_flip_depth = False
+randomflip_flip_height = False
+randomflip_flip_width = True
+normalizewithmeanstd_channels = [0, 1, 2]
+labeltoprobability_class_num = 2
+[network]
+net_type = resnet18
+pretrain = True
+input_chns = 3
+update_mode = all
+class_num = 2
+[training]
+gpus = [0]
+loss_type = CrossEntropyLoss
+optimizer = SGD
+learning_rate = 0.001
+momentum = 0.9
+weight_decay = 1e-05
+lr_scheduler = StepLR
+lr_gamma = 0.5
+lr_step = 1000
+ckpt_dir = model/resnet18
+ckpt_prefix = resnet18
+iter_start = 0
+iter_max = 5000
+iter_valid = 100
+iter_save = 5000
+early_stop_patience = 2000
+[testing]
+gpus = [0]
+ckpt_mode = 1
+output_dir = result
+output_csv = resnet18.csv
+save_probability = True
+deterministric is true
+parameter number 11177538
+2026-07-13 19:22:55 training start
+
+2026-07-13 19:23:00 it 100
+learning rate 0.001
+training/validation time: 4.30s/0.67s
+train loss 0.6336, avg accuracy 0.6825
+valid loss 0.4638, avg accuracy 0.8030
+
+2026-07-13 19:23:06 it 200
+learning rate 0.001
+training/validation time: 4.44s/0.64s
+train loss 0.6926, avg accuracy 0.6975
+valid loss 0.8832, avg accuracy 0.7576
+
+2026-07-13 19:23:10 it 300
+learning rate 0.001
+training/validation time: 3.99s/0.64s
+train loss 0.6108, avg accuracy 0.7400
+valid loss 0.8545, avg accuracy 0.7273
+
+2026-07-13 19:23:14 it 400
+learning rate 0.001
+training/validation time: 3.63s/0.64s
+train loss 0.6527, avg accuracy 0.7050
+valid loss 1.0518, avg accuracy 0.6667
+
+2026-07-13 19:23:19 it 500
+learning rate 0.001
+training/validation time: 3.94s/0.70s
+train loss 0.5859, avg accuracy 0.7475
+valid loss 0.4166, avg accuracy 0.8182
+
+2026-07-13 19:23:23 it 600
+learning rate 0.001
+training/validation time: 3.66s/0.56s
+train loss 0.6491, avg accuracy 0.6825
+valid loss 0.4667, avg accuracy 0.8030
+
+2026-07-13 19:23:27 it 700
+learning rate 0.001
+training/validation time: 3.50s/0.56s
+train loss 0.6023, avg accuracy 0.7325
+valid loss 0.5817, avg accuracy 0.8333
+
+2026-07-13 19:23:32 it 800
+learning rate 0.001
+training/validation time: 3.60s/0.59s
+train loss 0.5478, avg accuracy 0.7600
+valid loss 0.4014, avg accuracy 0.7879
+
+2026-07-13 19:23:36 it 900
+learning rate 0.001
+training/validation time: 3.43s/0.58s
+train loss 0.5171, avg accuracy 0.7800
+valid loss 0.5868, avg accuracy 0.7576
+
+2026-07-13 19:23:40 it 1000
+learning rate 0.001
+training/validation time: 3.45s/0.59s
+train loss 0.5600, avg accuracy 0.7775
+valid loss 0.3926, avg accuracy 0.8333
+
+2026-07-13 19:23:44 it 1100
+learning rate 0.0005
+training/validation time: 3.38s/0.57s
+train loss 0.4617, avg accuracy 0.8050
+valid loss 0.4913, avg accuracy 0.8030
+
+2026-07-13 19:23:48 it 1200
+learning rate 0.0005
+training/validation time: 3.36s/0.56s
+train loss 0.5138, avg accuracy 0.7950
+valid loss 0.4932, avg accuracy 0.8030
+
+2026-07-13 19:23:52 it 1300
+learning rate 0.0005
+training/validation time: 3.62s/0.66s
+train loss 0.4353, avg accuracy 0.8175
+valid loss 0.4796, avg accuracy 0.8182
+
+2026-07-13 19:23:56 it 1400
+learning rate 0.0005
+training/validation time: 3.46s/0.57s
+train loss 0.4315, avg accuracy 0.8350
+valid loss 0.4807, avg accuracy 0.8182
+
+2026-07-13 19:24:00 it 1500
+learning rate 0.0005
+training/validation time: 3.53s/0.59s
+train loss 0.3436, avg accuracy 0.8750
+valid loss 0.5470, avg accuracy 0.8030
+
+2026-07-13 19:24:04 it 1600
+learning rate 0.0005
+training/validation time: 3.39s/0.62s
+train loss 0.3671, avg accuracy 0.8600
+valid loss 0.4748, avg accuracy 0.7727
+
+2026-07-13 19:24:08 it 1700
+learning rate 0.0005
+training/validation time: 3.45s/0.58s
+train loss 0.3570, avg accuracy 0.8625
+valid loss 0.5238, avg accuracy 0.8182
+
+2026-07-13 19:24:12 it 1800
+learning rate 0.0005
+training/validation time: 3.42s/0.60s
+train loss 0.3817, avg accuracy 0.8675
+valid loss 0.4994, avg accuracy 0.8030
+
+2026-07-13 19:24:16 it 1900
+learning rate 0.0005
+training/validation time: 3.49s/0.60s
+train loss 0.3926, avg accuracy 0.8600
+valid loss 0.4615, avg accuracy 0.8333
+
+2026-07-13 19:24:20 it 2000
+learning rate 0.0005
+training/validation time: 3.48s/0.68s
+train loss 0.3567, avg accuracy 0.8600
+valid loss 0.4524, avg accuracy 0.7879
+
+2026-07-13 19:24:25 it 2100
+learning rate 0.00025
+training/validation time: 3.82s/0.65s
+train loss 0.3402, avg accuracy 0.8675
+valid loss 0.4510, avg accuracy 0.8182
+
+2026-07-13 19:24:30 it 2200
+learning rate 0.00025
+training/validation time: 3.97s/0.71s
+train loss 0.3385, avg accuracy 0.8700
+valid loss 0.4001, avg accuracy 0.8030
+
+2026-07-13 19:24:34 it 2300
+learning rate 0.00025
+training/validation time: 4.04s/0.57s
+train loss 0.3517, avg accuracy 0.8625
+valid loss 0.5270, avg accuracy 0.7879
+
+2026-07-13 19:24:38 it 2400
+learning rate 0.00025
+training/validation time: 3.41s/0.56s
+train loss 0.3294, avg accuracy 0.8975
+valid loss 0.4396, avg accuracy 0.8333
+
+2026-07-13 19:24:42 it 2500
+learning rate 0.00025
+training/validation time: 3.31s/0.60s
+train loss 0.2767, avg accuracy 0.9175
+valid loss 0.4138, avg accuracy 0.8182
+
+2026-07-13 19:24:46 it 2600
+learning rate 0.00025
+training/validation time: 3.30s/0.58s
+train loss 0.2871, avg accuracy 0.8975
+valid loss 0.5025, avg accuracy 0.8030
+
+2026-07-13 19:24:50 it 2700
+learning rate 0.00025
+training/validation time: 3.37s/0.55s
+train loss 0.3521, avg accuracy 0.8475
+valid loss 0.5070, avg accuracy 0.7727
+
+2026-07-13 19:24:54 it 2800
+learning rate 0.00025
+training/validation time: 3.60s/0.65s
+train loss 0.2781, avg accuracy 0.9100
+valid loss 0.4707, avg accuracy 0.8182
+The training is early stopped
+The best perfroming iter is 700, valid accuracy 0.8333333333333334

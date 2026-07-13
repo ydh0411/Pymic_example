@@ -1,0 +1,2 @@
+model,update_mode,best_iteration,stopped_iteration,best_valid_accuracy,test_accuracy,test_auc,wall_time_seconds
+resnet18,all,700,2800,0.8333333333333334,0.8796992481203008,0.9433876811594202,119
