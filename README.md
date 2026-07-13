@@ -6,10 +6,11 @@
 
 ## 已完成实验
 
-| Example | Task | Device | Status | Best accuracy | Best AUC |
+| Example | Task | Device | Status | Primary result | Secondary result |
 |---|---|---|---|---:|---:|
-| [AntBee](experiments/antbee/README.md) | ResNet18 二分类迁移学习 | Apple MPS | 完成 | 94.77% | 97.90% |
-| [CHNCXR](experiments/chncxr/README.md) | ResNet18 胸片正常/结核分类 | NVIDIA CUDA | 完成 | 87.97% | 94.34% |
+| [AntBee](experiments/antbee/README.md) | ResNet18 二分类迁移学习 | Apple MPS | 完成 | Accuracy 94.77% | AUC 97.90% |
+| [CHNCXR](experiments/chncxr/README.md) | ResNet18 胸片正常/结核分类 | NVIDIA CUDA | 完成 | Accuracy 87.97% | AUC 94.34% |
+| [JSRT COPLENet](experiments/jsrt_coplenet/README.md) | 胸片肺野二维全监督分割 | NVIDIA CUDA | 完成 | Dice 98.00% | ASSD 0.959 px |
 
 AntBee 分别比较了两种迁移学习策略：
 
@@ -22,13 +23,18 @@ CHNCXR 使用 662 张深圳医院胸片，在独立测试集上取得 87.97% acc
 
 ![CHNCXR ROC curve](experiments/chncxr/figures/fig_chncxr_roc.png)
 
+JSRT COPLENet 在 47 例独立测试集上取得 98.00% Dice，与示例参考结果 98.04% 基本一致。
+
+![JSRT metric distribution](experiments/jsrt_coplenet/figures/fig_jsrt_metric_distribution.png)
+
 ## 仓库结构
 
 ```text
 Pymic_example/
 ├── experiments/
 │   ├── antbee/
-│   └── chncxr/
+│   ├── chncxr/
+│   └── jsrt_coplenet/
 │       ├── config/       # 训练与评价配置
 │       ├── figures/      # 实验图表及绘图脚本
 │       ├── logs/         # 完整训练日志
@@ -46,6 +52,7 @@ Pymic_example/
 |---|---|---|---|---|
 | AntBee | macOS | 3.13.9 | 2.11.0 | Apple MPS |
 | CHNCXR | Windows 11 | 3.10.19 | 2.10.0+cu130 | NVIDIA CUDA |
+| JSRT COPLENet | Windows 11 | 3.10.19 | 2.10.0+cu130 | NVIDIA CUDA |
 
 ```bash
 python -c "import torch; print('CUDA:', torch.cuda.is_available()); print('MPS:', torch.backends.mps.is_available())"
@@ -59,6 +66,7 @@ python -c "import torch; print('CUDA:', torch.cuda.is_available()); print('MPS:'
 
 - Hymenoptera 数据集请从 PyTorch 官方地址下载。
 - CHNCXR 数据来自 Shenzhen Hospital X-ray Set，按 PyMIC 官方示例目录放置。
+- JSRT 图像与肺野标注按 PyMIC 官方示例目录放置。
 - ResNet18 预训练权重由 torchvision 自动下载。
 - 本地训练 checkpoint 通过 `.gitignore` 排除，避免仓库体积过大。
 
@@ -66,4 +74,4 @@ python -c "import torch; print('CUDA:', torch.cuda.is_available()); print('MPS:'
 
 - AntBee 使用官方示例中的验证集作为测试输入，并非独立测试集；CHNCXR 使用独立测试划分。
 - 每种设置只运行了一次，尚未进行多随机种子统计。
-- 当前已在 Apple MPS 和 NVIDIA CUDA 上验证 PyMIC 分类流程；分割及其他训练模式仍需继续验证。
+- 当前已验证 PyMIC 分类和二维全监督分割流程；半监督、弱监督及噪声标签学习等模式仍需继续验证。
