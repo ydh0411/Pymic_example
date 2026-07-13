@@ -1,0 +1,101 @@
+The running configuations are:
+[dataset]
+tensor_type = float
+task_type = TaskType.SEGMENTATION
+train_dir = ../../PyMIC_data/JSRT
+train_csv = config/jsrt_train.csv
+valid_csv = config/jsrt_valid.csv
+test_csv = config/jsrt_test.csv
+train_batch_size = 4
+train_transform = ['NormalizeWithMeanStd', 'RandomCrop', 'LabelConvert', 'LabelToProbability']
+valid_transform = ['NormalizeWithMeanStd', 'LabelConvert', 'LabelToProbability']
+test_transform = ['NormalizeWithMeanStd']
+normalizewithmeanstd_channels = [0]
+randomcrop_output_size = [224, 224]
+labelconvert_source_list = [0, 255]
+labelconvert_target_list = [0, 1]
+labeltoprobability_class_num = 2
+[network]
+net_type = COPLENet
+class_num = 2
+in_chns = 1
+feature_chns = [16, 32, 64, 128, 256]
+dropout = [0, 0, 0.3, 0.4, 0.5]
+[training]
+gpus = [0]
+loss_type = DiceLoss
+optimizer = Adam
+learning_rate = 0.001
+momentum = 0.9
+weight_decay = 1e-05
+lr_scheduler = MultiStepLR
+lr_gamma = 0.5
+lr_milestones = [1500, 3000, 4500]
+ckpt_dir = model/coplenet
+iter_max = 6000
+iter_valid = 250
+iter_save = 6000
+[testing]
+gpus = [0]
+ckpt_mode = 1
+output_dir = result/coplenet
+sliding_window_enable = True
+sliding_window_size = [224, 224]
+sliding_window_stride = [224, 224]
+label_source = [0, 1]
+label_target = [0, 255]
+deterministric is true
+Creating dataset for test
+image/JPCLN107.png
+parameter number 2634146
+The running configuations are:
+[dataset]
+tensor_type = float
+task_type = TaskType.SEGMENTATION
+train_dir = ../../PyMIC_data/JSRT
+train_csv = config/jsrt_train.csv
+valid_csv = config/jsrt_valid.csv
+test_csv = config/jsrt_test.csv
+train_batch_size = 4
+train_transform = ['NormalizeWithMeanStd', 'RandomCrop', 'LabelConvert', 'LabelToProbability']
+valid_transform = ['NormalizeWithMeanStd', 'LabelConvert', 'LabelToProbability']
+test_transform = ['NormalizeWithMeanStd']
+normalizewithmeanstd_channels = [0]
+randomcrop_output_size = [224, 224]
+labelconvert_source_list = [0, 255]
+labelconvert_target_list = [0, 1]
+labeltoprobability_class_num = 2
+[network]
+net_type = COPLENet
+class_num = 2
+in_chns = 1
+feature_chns = [16, 32, 64, 128, 256]
+dropout = [0, 0, 0.3, 0.4, 0.5]
+[training]
+gpus = [0]
+loss_type = DiceLoss
+optimizer = Adam
+learning_rate = 0.001
+momentum = 0.9
+weight_decay = 1e-05
+lr_scheduler = MultiStepLR
+lr_gamma = 0.5
+lr_milestones = [1500, 3000, 4500]
+ckpt_dir = model/coplenet
+iter_max = 6000
+iter_valid = 250
+iter_save = 6000
+[testing]
+gpus = [0]
+ckpt_mode = 1
+output_dir = result/coplenet
+sliding_window_enable = True
+sliding_window_size = [224, 224]
+sliding_window_stride = [224, 224]
+label_source = [0, 1]
+label_target = [0, 255]
+deterministric is true
+Creating dataset for test
+image/JPCLN107.png
+parameter number 2634146
+testing time 0.05017169485700891 +/- 0.03143128998260012
