@@ -9,6 +9,7 @@
 | Example | Task | Device | Status | Best accuracy | Best AUC |
 |---|---|---|---|---:|---:|
 | [AntBee](experiments/antbee/README.md) | ResNet18 二分类迁移学习 | Apple MPS | 完成 | 94.77% | 97.90% |
+| [CHNCXR](experiments/chncxr/README.md) | ResNet18 胸片正常/结核分类 | NVIDIA CUDA | 完成 | 87.97% | 94.34% |
 
 AntBee 分别比较了两种迁移学习策略：
 
@@ -17,12 +18,17 @@ AntBee 分别比较了两种迁移学习策略：
 
 ![AntBee comparison](experiments/antbee/figures/fig_ce1_ce2_comparison.png)
 
+CHNCXR 使用 662 张深圳医院胸片，在独立测试集上取得 87.97% accuracy 和 94.34% AUC。
+
+![CHNCXR ROC curve](experiments/chncxr/figures/fig_chncxr_roc.png)
+
 ## 仓库结构
 
 ```text
 Pymic_example/
 ├── experiments/
-│   └── antbee/
+│   ├── antbee/
+│   └── chncxr/
 │       ├── config/       # 训练与评价配置
 │       ├── figures/      # 实验图表及绘图脚本
 │       ├── logs/         # 完整训练日志
@@ -36,28 +42,28 @@ Pymic_example/
 
 ## 复现环境
 
-- macOS，Apple Silicon
-- Python 3.13.9
-- PyTorch 2.11.0
-- torchvision 0.26.0
-- MPS GPU 后端
+| Example | OS | Python | PyTorch | Accelerator |
+|---|---|---|---|---|
+| AntBee | macOS | 3.13.9 | 2.11.0 | Apple MPS |
+| CHNCXR | Windows 11 | 3.10.19 | 2.10.0+cu130 | NVIDIA CUDA |
 
 ```bash
-python -c "import torch; print(torch.backends.mps.is_available())"
+python -c "import torch; print('CUDA:', torch.cuda.is_available()); print('MPS:', torch.backends.mps.is_available())"
 ```
 
-详细命令和实验说明见 [AntBee 复现记录](experiments/antbee/README.md)。
+详细命令和实验说明见各 example 的独立 README。
 
 ## 数据与模型文件
 
 数据集和训练 checkpoint 不提交到 Git：
 
 - Hymenoptera 数据集请从 PyTorch 官方地址下载。
+- CHNCXR 数据来自 Shenzhen Hospital X-ray Set，按 PyMIC 官方示例目录放置。
 - ResNet18 预训练权重由 torchvision 自动下载。
 - 本地训练 checkpoint 通过 `.gitignore` 排除，避免仓库体积过大。
 
 ## 当前限制
 
-- 当前结果使用官方示例中的验证集作为测试输入，并非独立测试集。
+- AntBee 使用官方示例中的验证集作为测试输入，并非独立测试集；CHNCXR 使用独立测试划分。
 - 每种设置只运行了一次，尚未进行多随机种子统计。
-- 当前只完整验证了 PyMIC 分类流程在 Apple MPS 上的运行；分割及其他训练模式需要继续适配和验证。
+- 当前已在 Apple MPS 和 NVIDIA CUDA 上验证 PyMIC 分类流程；分割及其他训练模式仍需继续验证。

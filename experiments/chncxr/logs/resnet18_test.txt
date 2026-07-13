@@ -1,0 +1,52 @@
+The running configuations are:
+[dataset]
+tensor_type = float
+task_type = TaskType.CLASSIFICATION_ONE_HOT
+root_dir = ../../PyMIC_data/CHNCXR/CXR_png
+train_csv = config/cxr_train.csv
+valid_csv = config/cxr_valid.csv
+test_csv = config/cxr_test.csv
+train_batch_size = 4
+modal_num = 1
+train_transform = ['Rescale', 'RandomCrop', 'RandomFlip', 'GrayscaleToRGB', 'NormalizeWithMeanStd', 'LabelToProbability']
+valid_transform = ['Rescale', 'CenterCrop', 'GrayscaleToRGB', 'NormalizeWithMeanStd', 'LabelToProbability']
+test_transform = ['Rescale', 'CenterCrop', 'GrayscaleToRGB', 'NormalizeWithMeanStd']
+rescale_output_size = [256, 256]
+randomcrop_output_size = [224, 224]
+centercrop_output_size = [224, 224]
+randomflip_flip_depth = False
+randomflip_flip_height = False
+randomflip_flip_width = True
+normalizewithmeanstd_channels = [0, 1, 2]
+labeltoprobability_class_num = 2
+[network]
+net_type = resnet18
+pretrain = True
+input_chns = 3
+update_mode = all
+class_num = 2
+[training]
+gpus = [0]
+loss_type = CrossEntropyLoss
+optimizer = SGD
+learning_rate = 0.001
+momentum = 0.9
+weight_decay = 1e-05
+lr_scheduler = StepLR
+lr_gamma = 0.5
+lr_step = 1000
+ckpt_dir = model/resnet18
+ckpt_prefix = resnet18
+iter_start = 0
+iter_max = 5000
+iter_valid = 100
+iter_save = 5000
+early_stop_patience = 2000
+[testing]
+gpus = [0]
+ckpt_mode = 1
+output_dir = result
+output_csv = resnet18.csv
+save_probability = True
+deterministric is true
+parameter number 11177538
