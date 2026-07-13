@@ -1,0 +1,45 @@
+dataset tensor_type = float
+dataset task_type = TaskType.SEGMENTATION
+dataset train_dir = ../../PyMIC_data/JSRT
+dataset train_csv = ../2d_JSRT/config/jsrt_train.csv
+dataset valid_csv = ../2d_JSRT/config/jsrt_valid.csv
+dataset test_csv = ../2d_JSRT/config/jsrt_test.csv
+dataset train_batch_size = 4
+dataset train_transform = ['NormalizeWithMeanStd', 'RandomCrop', 'LabelConvert', 'LabelToProbability']
+dataset valid_transform = ['NormalizeWithMeanStd', 'LabelConvert', 'LabelToProbability']
+dataset test_transform = ['NormalizeWithMeanStd']
+dataset normalizewithmeanstd_channels = [0]
+dataset randomcrop_output_size = [240, 240]
+dataset labelconvert_source_list = [0, 255]
+dataset labelconvert_target_list = [0, 1]
+dataset labeltoprobability_class_num = 2
+network net_type = MyUNet2D
+network class_num = 2
+network in_chns = 1
+network feature_chns = [16, 32, 64, 128, 256]
+network dropout = [0.0, 0.0, 0.3, 0.4, 0.5]
+training gpus = [0]
+training loss_type = ['MyFocalDiceLoss', 'CrossEntropyLoss']
+training loss_weight = [1.0, 1.0]
+training myfocaldiceloss_beta = 1.5
+training optimizer = Adam
+training learning_rate = 0.001
+training momentum = 0.9
+training weight_decay = 1e-05
+training lr_scheduler = MultiStepLR
+training lr_gamma = 0.5
+training lr_milestones = [1500, 3000, 4500]
+training ckpt_dir = model/mynet
+training iter_max = 6000
+training iter_valid = 250
+training iter_save = 6000
+testing gpus = [0]
+testing ckpt_mode = 1
+testing output_dir = result/mynet
+testing label_source = [0, 1]
+testing label_target = [0, 255]
+deterministric is true
+Creating dataset for test
+image/JPCLN107.png
+parameter number 1944034
+testing time 0.008728265762329102 +/- 0.026950009106150155

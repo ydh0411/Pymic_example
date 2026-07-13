@@ -1,0 +1,7 @@
+PYMIC==0.5.4
+torch==2.10.0
+torchvision==0.25.0
+pandas==2.3.3
+matplotlib==3.10.8
+Pillow==12.0.0
+SimpleITK==2.5.3

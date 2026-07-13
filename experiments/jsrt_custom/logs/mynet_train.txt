@@ -1,0 +1,216 @@
+dataset tensor_type = float
+dataset task_type = TaskType.SEGMENTATION
+dataset train_dir = ../../PyMIC_data/JSRT
+dataset train_csv = ../2d_JSRT/config/jsrt_train.csv
+dataset valid_csv = ../2d_JSRT/config/jsrt_valid.csv
+dataset test_csv = ../2d_JSRT/config/jsrt_test.csv
+dataset train_batch_size = 4
+dataset train_transform = ['NormalizeWithMeanStd', 'RandomCrop', 'LabelConvert', 'LabelToProbability']
+dataset valid_transform = ['NormalizeWithMeanStd', 'LabelConvert', 'LabelToProbability']
+dataset test_transform = ['NormalizeWithMeanStd']
+dataset normalizewithmeanstd_channels = [0]
+dataset randomcrop_output_size = [240, 240]
+dataset labelconvert_source_list = [0, 255]
+dataset labelconvert_target_list = [0, 1]
+dataset labeltoprobability_class_num = 2
+network net_type = MyUNet2D
+network class_num = 2
+network in_chns = 1
+network feature_chns = [16, 32, 64, 128, 256]
+network dropout = [0.0, 0.0, 0.3, 0.4, 0.5]
+training gpus = [0]
+training loss_type = ['MyFocalDiceLoss', 'CrossEntropyLoss']
+training loss_weight = [1.0, 1.0]
+training myfocaldiceloss_beta = 1.5
+training optimizer = Adam
+training learning_rate = 0.001
+training momentum = 0.9
+training weight_decay = 1e-05
+training lr_scheduler = MultiStepLR
+training lr_gamma = 0.5
+training lr_milestones = [1500, 3000, 4500]
+training ckpt_dir = model/mynet
+training iter_max = 6000
+training iter_valid = 250
+training iter_save = 6000
+testing gpus = [0]
+testing ckpt_mode = 1
+testing output_dir = result/mynet
+testing label_source = [0, 1]
+testing label_target = [0, 255]
+deterministric is true
+Creating dataset for train
+image/JPCLN106.png
+Creating dataset for valid
+image/JPCNN066.png
+parameter number 1944034
+2026-07-13 20:16:52 training start
+
+2026-07-13 20:17:00 it 250
+learning rate 0.001
+training/validation time: 8.50s/0.19s
+train loss 0.1273, avg foreground dice 0.9546 [0.9737 0.9546]
+valid loss 0.0764, avg foreground dice 0.9692 [0.9873 0.9692]
+data: 2.59s, forward: 1.70s, loss: 0.35s, backward: 1.62s
+
+2026-07-13 20:17:09 it 500
+learning rate 0.001
+training/validation time: 8.25s/0.17s
+train loss 0.0562, avg foreground dice 0.9781 [0.9884 0.9781]
+valid loss 0.0731, avg foreground dice 0.9727 [0.9886 0.9727]
+data: 2.72s, forward: 1.53s, loss: 0.22s, backward: 1.63s
+
+2026-07-13 20:17:17 it 750
+learning rate 0.001
+training/validation time: 8.15s/0.16s
+train loss 0.0513, avg foreground dice 0.9800 [0.9893 0.9800]
+valid loss 0.0661, avg foreground dice 0.9758 [0.9900 0.9758]
+data: 2.69s, forward: 1.53s, loss: 0.22s, backward: 1.58s
+
+2026-07-13 20:17:26 it 1000
+learning rate 0.001
+training/validation time: 8.21s/0.18s
+train loss 0.0476, avg foreground dice 0.9814 [0.9901 0.9814]
+valid loss 0.0591, avg foreground dice 0.9767 [0.9904 0.9767]
+data: 2.71s, forward: 1.53s, loss: 0.21s, backward: 1.61s
+
+2026-07-13 20:17:34 it 1250
+learning rate 0.001
+training/validation time: 8.21s/0.16s
+train loss 0.0520, avg foreground dice 0.9798 [0.9893 0.9798]
+valid loss 0.0753, avg foreground dice 0.9713 [0.9884 0.9713]
+data: 2.73s, forward: 1.55s, loss: 0.21s, backward: 1.57s
+
+2026-07-13 20:17:43 it 1500
+learning rate 0.001
+training/validation time: 8.25s/0.17s
+train loss 0.0463, avg foreground dice 0.9818 [0.9903 0.9818]
+valid loss 0.0611, avg foreground dice 0.9780 [0.9909 0.9780]
+data: 2.74s, forward: 1.55s, loss: 0.22s, backward: 1.57s
+
+2026-07-13 20:17:51 it 1750
+learning rate 0.0005
+training/validation time: 8.25s/0.18s
+train loss 0.0404, avg foreground dice 0.9841 [0.9915 0.9841]
+valid loss 0.0629, avg foreground dice 0.9777 [0.9908 0.9777]
+data: 2.75s, forward: 1.53s, loss: 0.21s, backward: 1.56s
+
+2026-07-13 20:18:00 it 2000
+learning rate 0.0005
+training/validation time: 8.23s/0.18s
+train loss 0.0393, avg foreground dice 0.9846 [0.9917 0.9846]
+valid loss 0.0620, avg foreground dice 0.9775 [0.9908 0.9775]
+data: 2.76s, forward: 1.54s, loss: 0.22s, backward: 1.58s
+
+2026-07-13 20:18:08 it 2250
+learning rate 0.0005
+training/validation time: 8.23s/0.18s
+train loss 0.0382, avg foreground dice 0.9850 [0.9920 0.9850]
+valid loss 0.0627, avg foreground dice 0.9778 [0.9909 0.9778]
+data: 2.74s, forward: 1.56s, loss: 0.21s, backward: 1.56s
+
+2026-07-13 20:18:16 it 2500
+learning rate 0.0005
+training/validation time: 8.21s/0.16s
+train loss 0.0378, avg foreground dice 0.9852 [0.9921 0.9852]
+valid loss 0.0662, avg foreground dice 0.9767 [0.9904 0.9767]
+data: 2.75s, forward: 1.53s, loss: 0.22s, backward: 1.58s
+
+2026-07-13 20:18:25 it 2750
+learning rate 0.0005
+training/validation time: 8.28s/0.17s
+train loss 0.0370, avg foreground dice 0.9855 [0.9923 0.9855]
+valid loss 0.0677, avg foreground dice 0.9771 [0.9906 0.9771]
+data: 2.79s, forward: 1.56s, loss: 0.22s, backward: 1.58s
+
+2026-07-13 20:18:33 it 3000
+learning rate 0.0005
+training/validation time: 8.27s/0.16s
+train loss 0.0369, avg foreground dice 0.9855 [0.9923 0.9855]
+valid loss 0.0631, avg foreground dice 0.9770 [0.9905 0.9770]
+data: 2.76s, forward: 1.56s, loss: 0.22s, backward: 1.61s
+
+2026-07-13 20:18:42 it 3250
+learning rate 0.00025
+training/validation time: 8.25s/0.17s
+train loss 0.0354, avg foreground dice 0.9861 [0.9926 0.9861]
+valid loss 0.0623, avg foreground dice 0.9786 [0.9912 0.9786]
+data: 2.76s, forward: 1.54s, loss: 0.21s, backward: 1.59s
+
+2026-07-13 20:18:50 it 3500
+learning rate 0.00025
+training/validation time: 8.26s/0.16s
+train loss 0.0337, avg foreground dice 0.9869 [0.9930 0.9869]
+valid loss 0.0676, avg foreground dice 0.9774 [0.9906 0.9774]
+data: 2.76s, forward: 1.57s, loss: 0.23s, backward: 1.57s
+
+2026-07-13 20:18:59 it 3750
+learning rate 0.00025
+training/validation time: 8.26s/0.17s
+train loss 0.0335, avg foreground dice 0.9869 [0.9930 0.9869]
+valid loss 0.0668, avg foreground dice 0.9775 [0.9907 0.9775]
+data: 2.77s, forward: 1.56s, loss: 0.22s, backward: 1.56s
+
+2026-07-13 20:19:07 it 4000
+learning rate 0.00025
+training/validation time: 8.28s/0.24s
+train loss 0.0328, avg foreground dice 0.9872 [0.9932 0.9872]
+valid loss 0.0681, avg foreground dice 0.9775 [0.9907 0.9775]
+data: 2.76s, forward: 1.58s, loss: 0.23s, backward: 1.55s
+
+2026-07-13 20:19:16 it 4250
+learning rate 0.00025
+training/validation time: 8.33s/0.17s
+train loss 0.0326, avg foreground dice 0.9873 [0.9932 0.9873]
+valid loss 0.0666, avg foreground dice 0.9781 [0.9910 0.9781]
+data: 2.77s, forward: 1.57s, loss: 0.21s, backward: 1.62s
+
+2026-07-13 20:19:24 it 4500
+learning rate 0.00025
+training/validation time: 8.38s/0.17s
+train loss 0.0323, avg foreground dice 0.9874 [0.9933 0.9874]
+valid loss 0.0699, avg foreground dice 0.9778 [0.9909 0.9778]
+data: 2.79s, forward: 1.59s, loss: 0.22s, backward: 1.60s
+
+2026-07-13 20:19:33 it 4750
+learning rate 0.000125
+training/validation time: 8.29s/0.16s
+train loss 0.0306, avg foreground dice 0.9881 [0.9937 0.9881]
+valid loss 0.0681, avg foreground dice 0.9779 [0.9909 0.9779]
+data: 2.79s, forward: 1.54s, loss: 0.22s, backward: 1.60s
+
+2026-07-13 20:19:41 it 5000
+learning rate 0.000125
+training/validation time: 8.17s/0.17s
+train loss 0.0300, avg foreground dice 0.9884 [0.9938 0.9884]
+valid loss 0.0699, avg foreground dice 0.9774 [0.9907 0.9774]
+data: 2.69s, forward: 1.54s, loss: 0.23s, backward: 1.51s
+
+2026-07-13 20:19:49 it 5250
+learning rate 0.000125
+training/validation time: 8.20s/0.17s
+train loss 0.0296, avg foreground dice 0.9885 [0.9939 0.9885]
+valid loss 0.0721, avg foreground dice 0.9774 [0.9907 0.9774]
+data: 2.69s, forward: 1.55s, loss: 0.21s, backward: 1.52s
+
+2026-07-13 20:19:58 it 5500
+learning rate 0.000125
+training/validation time: 8.17s/0.17s
+train loss 0.0294, avg foreground dice 0.9887 [0.9939 0.9887]
+valid loss 0.0702, avg foreground dice 0.9776 [0.9908 0.9776]
+data: 2.69s, forward: 1.55s, loss: 0.21s, backward: 1.51s
+
+2026-07-13 20:20:06 it 5750
+learning rate 0.000125
+training/validation time: 8.22s/0.17s
+train loss 0.0290, avg foreground dice 0.9888 [0.9940 0.9888]
+valid loss 0.0690, avg foreground dice 0.9780 [0.9909 0.9780]
+data: 2.69s, forward: 1.57s, loss: 0.22s, backward: 1.53s
+
+2026-07-13 20:20:15 it 6000
+learning rate 0.000125
+training/validation time: 8.21s/0.18s
+train loss 0.0288, avg foreground dice 0.9889 [0.9941 0.9889]
+valid loss 0.0714, avg foreground dice 0.9774 [0.9908 0.9774]
+data: 2.69s, forward: 1.54s, loss: 0.21s, backward: 1.50s
+The best performing iter is 3250, valid dice 0.9785857200622559
