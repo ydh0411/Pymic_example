@@ -1,0 +1,2 @@
+model,best_iteration,final_iteration,best_valid_dice,test_dice_mean,test_dice_std,test_assd_mean,test_assd_std,parameters,training_seconds,inference_seconds_mean,inference_seconds_std
+UNet2D,9500,10000,0.9746789932250977,0.9708716946776711,0.024234176302573747,5.207246864123246,3.3045917367003157,1813218,924,0.11836478854185783,0.019760689956381302
