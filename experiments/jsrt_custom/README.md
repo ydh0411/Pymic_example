@@ -2,6 +2,12 @@
 
 本实验对应 PyMIC 示例列表中的 JSRT2 / `seg_full_sup/custom`。它沿用与 COPLENet 实验完全相同的 JSRT 数据划分，但通过 `SegmentationAgent` 注入自定义的残差二维 UNet（`MyUNet2D`）与自定义 Focal Dice loss，并联合 Cross Entropy loss 训练。
 
+## 技术简介
+
+MyUNet2D 保留 UNet 的编码器—解码器和跳跃连接，并在卷积块中加入残差路径，使梯度更容易传播，同时融合浅层定位信息与深层语义信息。自定义组件通过 PyMIC 的网络和损失函数字典注册，因此训练、测试和评价流程仍可复用框架原有的 agent。
+
+Focal Dice loss 更强调难分像素和重叠质量，Cross Entropy loss 提供逐像素分类监督。两种目标相加，可以同时约束区域整体形状与局部分类错误。
+
 ## 实验结果
 
 | 指标 | 结果 |

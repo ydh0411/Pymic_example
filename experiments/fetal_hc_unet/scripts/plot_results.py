@@ -25,14 +25,18 @@ GOLD = "#FFD700"
 def configure_style() -> None:
     plt.rcParams.update(
         {
-            "font.family": "DejaVu Sans",
-            "font.size": 10,
-            "axes.linewidth": 1.8,
+            "font.family": "sans-serif",
+            "font.sans-serif": ["Arial", "Helvetica", "DejaVu Sans"],
+            "font.size": 10.5,
+            "axes.titlesize": 11.5,
+            "axes.titleweight": "semibold",
+            "axes.linewidth": 1.5,
             "axes.spines.top": False,
             "axes.spines.right": False,
             "legend.frameon": False,
             "pdf.fonttype": 42,
             "ps.fonttype": 42,
+            "svg.fonttype": "none",
         }
     )
 
@@ -40,9 +44,20 @@ def configure_style() -> None:
 def save_figure(fig: plt.Figure, stem: str) -> None:
     output_dir = EXPERIMENT_DIR / "figures"
     output_dir.mkdir(parents=True, exist_ok=True)
-    fig.savefig(output_dir / f"{stem}.png", dpi=300, bbox_inches="tight")
-    fig.savefig(output_dir / f"{stem}.pdf", bbox_inches="tight")
+    fig.savefig(output_dir / f"{stem}.png", dpi=300, bbox_inches="tight", pad_inches=0.06)
+    fig.savefig(output_dir / f"{stem}.pdf", bbox_inches="tight", pad_inches=0.06)
     plt.close(fig)
+
+
+def style_axis(ax: plt.Axes) -> None:
+    ax.grid(axis="y", color="#E7E7E7", linewidth=0.7)
+    ax.set_axisbelow(True)
+    ax.tick_params(width=1.2, length=4)
+
+
+def add_panel_label(ax: plt.Axes, label: str) -> None:
+    ax.text(-0.11, 1.06, label, transform=ax.transAxes, fontsize=12,
+            fontweight="bold", va="top")
 
 
 def read_case_metrics(path: Path) -> pd.DataFrame:
@@ -99,9 +114,12 @@ def plot_learning_curves() -> None:
 
     for ax in axes:
         ax.set_xlabel("Training iteration")
-        ax.grid(axis="y", color="#E5E5E5", linewidth=0.7)
-    fig.suptitle("Fetal_HC UNet2D learning dynamics", fontweight="bold")
-    fig.tight_layout()
+        style_axis(ax)
+    add_panel_label(axes[0], "a")
+    add_panel_label(axes[1], "b")
+    fig.suptitle("Fetal_HC · UNet2D learning dynamics", fontsize=13,
+                 fontweight="semibold", y=1.02)
+    fig.tight_layout(pad=1.0, w_pad=2.0)
     save_figure(fig, "fig_fetal_hc_learning_curves")
 
 
@@ -141,9 +159,12 @@ def plot_metric_distribution() -> None:
 
     for ax in axes:
         ax.set_xlabel("Test case (sorted)")
-        ax.grid(axis="y", color="#E5E5E5", linewidth=0.7)
-    fig.suptitle("Fetal_HC UNet2D test-set performance", fontweight="bold")
-    fig.tight_layout()
+        style_axis(ax)
+    add_panel_label(axes[0], "a")
+    add_panel_label(axes[1], "b")
+    fig.suptitle("Fetal_HC · UNet2D test-set performance", fontsize=13,
+                 fontweight="semibold", y=1.02)
+    fig.tight_layout(pad=1.0, w_pad=2.0)
     save_figure(fig, "fig_fetal_hc_metric_distribution")
 
 
@@ -189,7 +210,7 @@ def plot_qualitative(data_root: Path) -> None:
 
     titles = ("Ultrasound", "Ground-truth contour", "Prediction contour", "Error overlay")
     for ax, title in zip(axes[0], titles):
-        ax.set_title(title, fontweight="bold", fontsize=10)
+        ax.set_title(title, fontweight="semibold", fontsize=10)
     fig.text(
         0.5,
         0.015,
@@ -197,7 +218,8 @@ def plot_qualitative(data_root: Path) -> None:
         ha="center",
         fontsize=9,
     )
-    fig.suptitle("Fetal_HC UNet2D qualitative segmentation", fontweight="bold")
+    fig.suptitle("Fetal_HC · UNet2D qualitative segmentation", fontsize=13,
+                 fontweight="semibold")
     fig.tight_layout(rect=(0, 0.035, 1, 0.96))
     save_figure(fig, "fig_fetal_hc_qualitative")
 

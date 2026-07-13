@@ -15,33 +15,35 @@ AUC = np.array([97.90017211703959, 97.41824440619622])
 TRAINABLE_PARAMS = np.array([11_177_538, 1_026])
 BEST_ITERATION = [900, 1500]
 
-COLORS = ["#0072B2", "#E69F00"]  # Okabe-Ito colorblind-safe palette
+COLORS = ["#CFCECE", "#0F4D92"]
+EDGE_COLORS = ["#5F5F5F", "#0B365F"]
 
 
 def main():
     plt.rcParams.update(
         {
-            "font.family": "serif",
-            "font.serif": ["Times New Roman", "DejaVu Serif"],
-            "font.size": 10,
-            "axes.titlesize": 11,
-            "axes.titleweight": "bold",
-            "axes.labelsize": 10,
-            "legend.fontsize": 8.5,
+            "font.family": "sans-serif",
+            "font.sans-serif": ["Arial", "Helvetica", "DejaVu Sans"],
+            "font.size": 10.5,
+            "axes.titlesize": 11.5,
+            "axes.titleweight": "semibold",
+            "axes.labelsize": 10.5,
+            "legend.fontsize": 8.8,
             "legend.frameon": False,
             "figure.dpi": 300,
             "savefig.dpi": 300,
             "savefig.bbox": "tight",
             "axes.spines.top": False,
             "axes.spines.right": False,
-            "axes.grid": True,
-            "grid.alpha": 0.18,
-            "grid.linestyle": "-",
+            "axes.linewidth": 1.5,
+            "pdf.fonttype": 42,
+            "ps.fonttype": 42,
+            "svg.fonttype": "none",
         }
     )
 
     fig, (ax_metric, ax_params) = plt.subplots(
-        1, 2, figsize=(7.2, 3.15), gridspec_kw={"width_ratios": [1.45, 1.0]}
+        1, 2, figsize=(8.4, 3.35), gridspec_kw={"width_ratios": [1.5, 1.0]}
     )
 
     categories = ["Accuracy", "AUC"]
@@ -57,8 +59,8 @@ def main():
             width * 0.92,
             label=method,
             color=COLORS[idx],
-            edgecolor="white",
-            linewidth=0.7,
+            edgecolor=EDGE_COLORS[idx],
+            linewidth=1.0,
             zorder=3,
         )
         for bar, score in zip(bars, values[idx]):
@@ -68,7 +70,7 @@ def main():
                 f"{score:.2f}",
                 ha="center",
                 va="bottom",
-                fontsize=8,
+                fontsize=8.5,
                 color="#333333",
             )
 
@@ -76,9 +78,12 @@ def main():
     ax_metric.set_xticklabels(categories)
     ax_metric.set_ylabel("Score (%)")
     ax_metric.set_ylim(90, 99.3)
-    ax_metric.set_title("Predictive performance (axis: 90–99.3%)")
-    ax_metric.legend(loc="lower center", bbox_to_anchor=(0.5, -0.31), ncol=2)
+    ax_metric.set_title("Predictive performance")
+    ax_metric.legend(loc="lower center", bbox_to_anchor=(0.5, -0.30), ncol=2)
+    ax_metric.grid(axis="y", color="#E7E7E7", linewidth=0.7)
     ax_metric.set_axisbelow(True)
+    ax_metric.text(-0.12, 1.06, "a", transform=ax_metric.transAxes,
+                   fontsize=12, fontweight="bold", va="top")
 
     y = np.arange(len(METHODS))
     bars = ax_params.barh(
@@ -86,8 +91,8 @@ def main():
         TRAINABLE_PARAMS,
         color=COLORS,
         height=0.5,
-        edgecolor="white",
-        linewidth=0.7,
+        edgecolor=EDGE_COLORS,
+        linewidth=1.0,
         zorder=3,
     )
     ax_params.set_xscale("log")
@@ -96,7 +101,10 @@ def main():
     ax_params.invert_yaxis()
     ax_params.set_xlabel("Trainable parameters (log scale)")
     ax_params.set_title("Fine-tuning efficiency")
+    ax_params.grid(axis="x", color="#E7E7E7", linewidth=0.7)
     ax_params.set_axisbelow(True)
+    ax_params.text(-0.18, 1.06, "b", transform=ax_params.transAxes,
+                   fontsize=12, fontweight="bold", va="top")
 
     for bar, params, best_it in zip(bars, TRAINABLE_PARAMS, BEST_ITERATION):
         ax_params.text(
@@ -104,15 +112,17 @@ def main():
             bar.get_y() + bar.get_height() / 2,
             f"{params:,}\nbest @ {best_it}",
             va="center",
-            fontsize=8,
+            fontsize=8.5,
             color="#333333",
         )
 
-    fig.suptitle("PyMIC AntBee: full fine-tuning vs. classifier-only fine-tuning", y=1.02)
-    fig.subplots_adjust(bottom=0.25, wspace=0.45)
+    fig.suptitle("AntBee · transfer-learning strategy comparison", fontsize=13,
+                 fontweight="semibold", y=1.02)
+    fig.subplots_adjust(bottom=0.25, wspace=0.48)
 
-    fig.savefig(OUTPUT_DIR / "fig_ce1_ce2_comparison.pdf")
-    fig.savefig(OUTPUT_DIR / "fig_ce1_ce2_comparison.png", dpi=300)
+    fig.savefig(OUTPUT_DIR / "fig_ce1_ce2_comparison.pdf", bbox_inches="tight", pad_inches=0.06)
+    fig.savefig(OUTPUT_DIR / "fig_ce1_ce2_comparison.png", dpi=300,
+                bbox_inches="tight", pad_inches=0.06)
     plt.close(fig)
 
 

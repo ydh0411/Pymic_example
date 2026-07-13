@@ -9,6 +9,12 @@
 
 原始示例来自 [PyMIC_examples/classification/AntBee](https://github.com/HiLab-git/PyMIC_examples/tree/main/classification/AntBee)，数据来自 PyTorch 的迁移学习教程。
 
+## 技术简介
+
+迁移学习先复用 ResNet18 在 ImageNet 上学到的通用视觉特征，再用较小的蚂蚁/蜜蜂数据集完成二分类。CE1 会更新整个网络，适应能力更强但需要训练约 1118 万个参数；CE2 冻结卷积骨干，只训练最后的线性分类器，因此计算和存储开销更低，也更不容易在小数据集上过拟合。
+
+Accuracy 衡量最终分类正确率，AUC 则汇总不同判定阈值下区分两类样本的能力。两者结合可以避免只根据单一阈值评价模型。
+
 ## 2. 数据集
 
 下载并解压：

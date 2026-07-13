@@ -23,7 +23,7 @@ AntBee 分别比较了两种迁移学习策略：
 
 CHNCXR 使用 662 张深圳医院胸片，在独立测试集上取得 87.97% accuracy 和 94.34% AUC。
 
-![CHNCXR ROC curve](experiments/chncxr/figures/fig_chncxr_roc.png)
+![CHNCXR classification summary](experiments/chncxr/figures/fig_chncxr_summary.png)
 
 JSRT COPLENet 在 47 例独立测试集上取得 98.00% Dice，与示例参考结果 98.04% 基本一致。
 

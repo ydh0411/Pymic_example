@@ -13,6 +13,7 @@ from PIL import Image
 
 EXPERIMENT_DIR = Path(__file__).resolve().parents[1]
 BLUE = "#0F4D92"
+BLUE_LIGHT = "#3775BA"
 RED = "#B64342"
 GREEN = "#8BCF8B"
 GRAY = "#767676"
@@ -21,13 +22,18 @@ GRAY = "#767676"
 def configure_style() -> None:
     plt.rcParams.update(
         {
-            "font.family": "DejaVu Sans",
-            "font.size": 10,
-            "axes.linewidth": 1.8,
+            "font.family": "sans-serif",
+            "font.sans-serif": ["Arial", "Helvetica", "DejaVu Sans"],
+            "font.size": 10.5,
+            "axes.titlesize": 11.5,
+            "axes.titleweight": "semibold",
+            "axes.linewidth": 1.5,
             "axes.spines.top": False,
             "axes.spines.right": False,
+            "legend.frameon": False,
             "pdf.fonttype": 42,
             "ps.fonttype": 42,
+            "svg.fonttype": "none",
         }
     )
 
@@ -40,9 +46,20 @@ def read_case_metrics(path: Path) -> pd.DataFrame:
 def save_figure(fig: plt.Figure, stem: str) -> None:
     output_dir = EXPERIMENT_DIR / "figures"
     output_dir.mkdir(parents=True, exist_ok=True)
-    fig.savefig(output_dir / f"{stem}.png", dpi=300, bbox_inches="tight")
-    fig.savefig(output_dir / f"{stem}.pdf", bbox_inches="tight")
+    fig.savefig(output_dir / f"{stem}.png", dpi=300, bbox_inches="tight", pad_inches=0.06)
+    fig.savefig(output_dir / f"{stem}.pdf", bbox_inches="tight", pad_inches=0.06)
     plt.close(fig)
+
+
+def style_axis(ax: plt.Axes) -> None:
+    ax.grid(axis="y", color="#E7E7E7", linewidth=0.7)
+    ax.set_axisbelow(True)
+    ax.tick_params(width=1.2, length=4)
+
+
+def add_panel_label(ax: plt.Axes, label: str) -> None:
+    ax.text(-0.11, 1.06, label, transform=ax.transAxes, fontsize=12,
+            fontweight="bold", va="top")
 
 
 def plot_metric_distribution() -> None:
@@ -50,7 +67,7 @@ def plot_metric_distribution() -> None:
     assd = read_case_metrics(EXPERIMENT_DIR / "results" / "eval_assd.csv")
     merged = dice.merge(assd, on="image", suffixes=("_dice", "_assd"))
 
-    fig, axes = plt.subplots(1, 2, figsize=(9.0, 3.6))
+    fig, axes = plt.subplots(1, 2, figsize=(9.2, 3.6))
     panels = (
         (axes[0], merged.sort_values("class_255_dice"), "class_255_dice", "Dice", BLUE),
         (axes[1], merged.sort_values("class_255_assd"), "class_255_assd", "ASSD (pixels)", RED),
@@ -59,7 +76,8 @@ def plot_metric_distribution() -> None:
         x = np.arange(1, len(ordered) + 1)
         values = ordered[column].to_numpy()
         ax.plot(x, values, color=color, linewidth=1.7)
-        ax.scatter(x, values, color=color, s=17, zorder=3)
+        ax.scatter(x, values, color=BLUE_LIGHT if column.endswith("dice") else color,
+                   s=16, zorder=3)
         ax.axhline(values.mean(), color=GRAY, linestyle="--", linewidth=1.4,
                    label=f"Mean = {values.mean():.4f}")
         extreme = int(np.argmin(values) if column.endswith("dice") else np.argmax(values))
@@ -67,10 +85,13 @@ def plot_metric_distribution() -> None:
                    label=ordered.iloc[extreme]["image"])
         ax.set_xlabel("Test case (sorted)")
         ax.set_ylabel(ylabel)
-        ax.legend(frameon=False, fontsize=8)
-        ax.grid(axis="y", color="#E5E5E5", linewidth=0.7)
-    fig.suptitle("JSRT COPLENet per-case segmentation performance", fontweight="bold")
-    fig.tight_layout()
+        ax.legend(fontsize=8)
+        style_axis(ax)
+    add_panel_label(axes[0], "a")
+    add_panel_label(axes[1], "b")
+    fig.suptitle("JSRT · COPLENet test-set performance", fontsize=13,
+                 fontweight="semibold", y=1.02)
+    fig.tight_layout(pad=1.0, w_pad=2.0)
     save_figure(fig, "fig_jsrt_metric_distribution")
 
 
@@ -90,16 +111,16 @@ def plot_qualitative(data_root: Path) -> None:
         image = read_gray(data_root / "image" / name)
         target = read_gray(data_root / "label" / name) > 0
         prediction = read_gray(EXPERIMENT_DIR / "results" / "predictions" / name) > 0
-        overlay = np.zeros((*target.shape, 3), dtype=np.float32)
-        overlay[target & prediction] = np.array([139, 207, 139]) / 255.0
-        overlay[~target & prediction] = np.array([182, 67, 66]) / 255.0
-        overlay[target & ~prediction] = np.array([15, 77, 146]) / 255.0
-
-        panels = (image, target, prediction, overlay)
-        cmaps = ("gray", "gray", "gray", None)
-        for col, (panel, cmap) in enumerate(zip(panels, cmaps)):
-            axes[row, col].imshow(panel, cmap=cmap)
+        for col in range(4):
+            axes[row, col].imshow(image, cmap="gray")
             axes[row, col].axis("off")
+        axes[row, 1].contour(target, levels=[0.5], colors=[GREEN], linewidths=1.4)
+        axes[row, 2].contour(prediction, levels=[0.5], colors=[RED], linewidths=1.4)
+        overlay = np.zeros((*target.shape, 4), dtype=np.float32)
+        overlay[target & prediction] = np.array([139, 207, 139, 82]) / 255.0
+        overlay[~target & prediction] = np.array([182, 67, 66, 210]) / 255.0
+        overlay[target & ~prediction] = np.array([15, 77, 146, 210]) / 255.0
+        axes[row, 3].imshow(overlay)
         axes[row, 0].text(
             0.03,
             0.04,
@@ -110,8 +131,10 @@ def plot_qualitative(data_root: Path) -> None:
             bbox={"facecolor": "black", "alpha": 0.72, "edgecolor": "none", "pad": 2.5},
         )
 
-    for ax, title in zip(axes[0], ("Image", "Ground truth", "Prediction", "Error overlay")):
-        ax.set_title(title, fontweight="bold", fontsize=10)
+    for ax, title in zip(
+        axes[0], ("Chest radiograph", "Ground-truth contour", "Prediction contour", "Error overlay")
+    ):
+        ax.set_title(title, fontweight="semibold", fontsize=10)
     fig.text(
         0.5,
         0.015,
@@ -119,7 +142,8 @@ def plot_qualitative(data_root: Path) -> None:
         ha="center",
         fontsize=9,
     )
-    fig.suptitle("JSRT COPLENet qualitative results", fontweight="bold")
+    fig.suptitle("JSRT · COPLENet qualitative segmentation", fontsize=13,
+                 fontweight="semibold")
     fig.tight_layout(rect=(0, 0.035, 1, 0.96))
     save_figure(fig, "fig_jsrt_qualitative")
 
