@@ -1,0 +1,66 @@
+The running configuations are:
+[dataset]
+tensor_type = float
+task_type = TaskType.SEGMENTATION
+train_dir = ../../PyMIC_data/ACDC/preprocess/
+train_csv = config/data/image_train.csv
+valid_csv = config/data/image_valid.csv
+test_csv = config/data/image_test.csv
+train_batch_size = 4
+train_transform = ['NormalizeWithMeanStd', 'Pad', 'RandomFlip', 'RandomCrop', 'LabelToProbability']
+valid_transform = ['NormalizeWithMeanStd', 'Pad', 'LabelToProbability']
+test_transform = ['NormalizeWithMeanStd', 'Pad']
+normalizewithmeanstd_channels = [0]
+randomflip_flip_depth = False
+randomflip_flip_height = True
+randomflip_flip_width = True
+randomcrop_output_size = [8, 224, 224]
+randomcrop_foreground_focus = True
+randomcrop_foreground_ratio = 0.5
+randomcrop_mask_label = [1, 2, 3]
+pad_output_size = [8, 224, 224]
+pad_ceil_mode = False
+labeltoprobability_class_num = 4
+[network]
+net_type = UNet2D
+class_num = 4
+in_chns = 1
+feature_chns = [16, 32, 64, 128, 256]
+dropout = [0.0, 0.0, 0.2, 0.2, 0.2]
+up_mode = 2
+multiscale_pred = False
+[training]
+gpus = [0]
+loss_type = DiceLoss
+optimizer = Adam
+learning_rate = 0.001
+momentum = 0.9
+weight_decay = 1e-05
+lr_scheduler = StepLR
+lr_gamma = 0.5
+lr_step = 5000
+early_stop_patience = 10000
+ckpt_dir = model/unet2d
+iter_max = 15000
+iter_valid = 250
+iter_save = 15000
+[testing]
+gpus = [0]
+ckpt_mode = 1
+output_dir = result/unet2d
+sliding_window_enable = True
+sliding_window_batch = 2
+sliding_window_size = [8, 224, 224]
+sliding_window_stride = [8, 224, 224]
+deterministric is true
+Creating dataset for test
+patient001_frame01.nii.gz
+net_type  = UNet2D
+class_num  = 4
+in_chns  = 1
+feature_chns  = [16, 32, 64, 128, 256]
+dropout  = [0.0, 0.0, 0.2, 0.2, 0.2]
+up_mode  = 2
+multiscale_pred  = False
+parameter number 1813252
+testing time 0.10303673148155212 +/- 0.04117006020716405
