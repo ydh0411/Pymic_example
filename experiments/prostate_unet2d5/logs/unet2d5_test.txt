@@ -1,0 +1,159 @@
+pymic_test : D:\Annaconda\envs\med_ai_310\lib\site-packages\timm\models\layers\__init__.py:49: FutureWarning: Importing from timm.models.layers is deprecated, please import via timm.layers
+At line:3 char:1
++ pymic_test unet2d5_bs1_long.cfg 2>&1 |
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (D:\Annaconda\en...via timm.layers:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+
+  warnings.warn(f"Importing from {__name__} is deprecated, please import via timm.layers", FutureWarning)
+dataset tensor_type float
+dataset task_type seg
+dataset train_dir ../../PyMIC_data/Promise12/preprocess
+dataset train_csv config/data/image_train.csv
+dataset valid_csv config/data/image_valid.csv
+dataset test_csv config/data/image_test_input.csv
+dataset train_batch_size 1
+dataset patch_size [64, 128, 128]
+dataset train_transform [Pad, RandomCrop, RandomFlip, NormalizeWithMeanStd, GammaCorrection, GaussianNoise, LabelToProbability]
+dataset valid_transform [NormalizeWithMeanStd, Pad, LabelToProbability]
+dataset test_transform [NormalizeWithMeanStd, Pad]
+dataset randomflip_flip_depth True
+dataset randomflip_flip_height True
+dataset randomflip_flip_width True
+dataset normalizewithmeanstd_channels [0]
+dataset gammacorrection_channels [0]
+dataset gammacorrection_gamma_min 0.7
+dataset gammacorrection_gamma_max 1.5
+dataset gaussiannoise_channels [0]
+dataset gaussiannoise_mean 0
+dataset gaussiannoise_std 0.05
+dataset gaussiannoise_probability 0.5
+network net_type UNet2D5
+network class_num 2
+network in_chns 1
+network feature_chns [32, 64, 128, 256, 512]
+network dropout [0, 0, 0.2, 0.2, 0.2]
+network conv_dims [2, 2, 3, 3, 3]
+network multiscale_pred True
+training gpus [0]
+training loss_type [DiceLoss, CrossEntropyLoss]
+training loss_weight [1.0, 1.0]
+training deep_supervise True
+training optimizer Adam
+training learning_rate 1e-3
+training momentum 0.9
+training weight_decay 1e-5
+training lr_scheduler PolynomialLR
+training lr_power 0.8
+training early_stop_patience 4000
+training ckpt_dir model/unet2d5_bs1_long
+training iter_max 16000
+training iter_valid 250
+training iter_save 4000
+testing gpus [0]
+testing ckpt_mode 1
+testing output_dir result/unet2d5_bs1_long
+testing post_process KeepLargestComponent
+testing sliding_window_enable True
+testing sliding_window_size [64, 128, 128]
+testing sliding_window_stride [64, 128, 128]
+{'dataset': {'tensor_type': 'float', 'task_type': <TaskType.SEGMENTATION: 4>, 'train_dir': '../../PyMIC_data/Promise12/preprocess', 'train_csv': 'config/data/image_train.csv', 'valid_csv': 'config/data/image_valid.csv', 'test_csv': 'config/data/image_test_input.csv', 'train_batch_size': 1, 'patch_size': [64, 128, 128], 'train_transform': ['Pad', 'RandomCrop', 'RandomFlip', 'NormalizeWithMeanStd', 'GammaCorrection', 'GaussianNoise', 'LabelToProbability'], 'valid_transform': ['NormalizeWithMeanStd', 'Pad', 'LabelToProbability'], 'test_transform': ['NormalizeWithMeanStd', 'Pad'], 'randomflip_flip_depth': True, 'randomflip_flip_height': True, 'randomflip_flip_width': True, 'normalizewithmeanstd_channels': [0], 'gammacorrection_channels': [0], 'gammacorrection_gamma_min': 0.7, 'gammacorrection_gamma_max': 1.5, 'gaussiannoise_channels': [0], 'gaussiannoise_mean': 0, 'gaussiannoise_std': 0.05, 'gaussiannoise_probability': 0.5, 'labeltoprobability_class_num': 2, 'pad_output_size': [64, 128, 128], 'randomcrop_output_size': [64, 128, 128]}, 'network': {'net_type': 'UNet2D5', 'class_num': 2, 'in_chns': 1, 'feature_chns': [32, 64, 128, 256, 512], 'dropout': [0, 0, 0.2, 0.2, 0.2], 'conv_dims': [2, 2, 3, 3, 3], 'multiscale_pred': True}, 'training': {'gpus': [0], 'loss_type': ['DiceLoss', 'CrossEntropyLoss'], 'loss_weight': [1.0, 1.0], 'deep_supervise': True, 'optimizer': 'Adam', 'learning_rate': 0.001, 'momentum': 0.9, 'weight_decay': 1e-05, 'lr_scheduler': 'PolynomialLR', 'lr_power': 0.8, 'early_stop_patience': 4000, 'ckpt_dir': 'model/unet2d5_bs1_long', 'iter_max': 16000, 'iter_valid': 250, 'iter_save': 4000}, 'testing': {'gpus': [0], 'ckpt_mode': 1, 'output_dir': 'result/unet2d5_bs1_long', 'post_process': 'KeepLargestComponent', 'sliding_window_enable': True, 'sliding_window_size': [64, 128, 128], 'sliding_window_stride': [64, 128, 128]}}
+The running configuations are:
+[dataset]
+tensor_type = float
+task_type = TaskType.SEGMENTATION
+train_dir = ../../PyMIC_data/Promise12/preprocess
+train_csv = config/data/image_train.csv
+valid_csv = config/data/image_valid.csv
+test_csv = config/data/image_test_input.csv
+train_batch_size = 1
+patch_size = [64, 128, 128]
+train_transform = ['Pad', 'RandomCrop', 'RandomFlip', 'NormalizeWithMeanStd', 'GammaCorrection', 'GaussianNoise', 'LabelToProbability']
+valid_transform = ['NormalizeWithMeanStd', 'Pad', 'LabelToProbability']
+test_transform = ['NormalizeWithMeanStd', 'Pad']
+randomflip_flip_depth = True
+randomflip_flip_height = True
+randomflip_flip_width = True
+normalizewithmeanstd_channels = [0]
+gammacorrection_channels = [0]
+gammacorrection_gamma_min = 0.7
+gammacorrection_gamma_max = 1.5
+gaussiannoise_channels = [0]
+gaussiannoise_mean = 0
+gaussiannoise_std = 0.05
+gaussiannoise_probability = 0.5
+labeltoprobability_class_num = 2
+pad_output_size = [64, 128, 128]
+randomcrop_output_size = [64, 128, 128]
+[network]
+net_type = UNet2D5
+class_num = 2
+in_chns = 1
+feature_chns = [32, 64, 128, 256, 512]
+dropout = [0, 0, 0.2, 0.2, 0.2]
+conv_dims = [2, 2, 3, 3, 3]
+multiscale_pred = True
+[training]
+gpus = [0]
+loss_type = ['DiceLoss', 'CrossEntropyLoss']
+loss_weight = [1.0, 1.0]
+deep_supervise = True
+optimizer = Adam
+learning_rate = 0.001
+momentum = 0.9
+weight_decay = 1e-05
+lr_scheduler = PolynomialLR
+lr_power = 0.8
+early_stop_patience = 4000
+ckpt_dir = model/unet2d5_bs1_long
+iter_max = 16000
+iter_valid = 250
+iter_save = 4000
+[testing]
+gpus = [0]
+ckpt_mode = 1
+output_dir = result/unet2d5_bs1_long
+post_process = KeepLargestComponent
+sliding_window_enable = True
+sliding_window_size = [64, 128, 128]
+sliding_window_stride = [64, 128, 128]
+deterministric is true
+Creating dataset for test
+image/promise_40.nii.gz
+`label` section is not found in the csv file config/data/image_test_input.csv or the corresponding h5 file.
+ -- This is only allowed for self-supervised learning
+ -- when `SelfSuperviseLabel` is used in the transform, or when
+ -- loading the unlabeled data for preprocessing.
+net_type  = UNet2D5
+class_num  = 2
+in_chns  = 1
+feature_chns  = [32, 64, 128, 256, 512]
+dropout  = [0, 0, 0.2, 0.2, 0.2]
+conv_dims  = [2, 2, 3, 3, 3]
+multiscale_pred  = True
+up_mode  = 2
+net_type UNet2D5
+class_num 2
+in_chns 1
+feature_chns [32, 64, 128, 256, 512]
+dropout [0, 0, 0.2, 0.2, 0.2]
+conv_dims [2, 2, 3, 3, 3]
+multiscale_pred True
+up_mode 2
+parameter number 20957530
+D:\Annaconda\envs\med_ai_310\lib\site-packages\pymic\net_run\agent_seg.py:468: UserWarning: Environment variable TORCH_FORCE_NO_WEIGHTS_ONLY_LOAD detected, since the`weights_only` argument was not explicitly passed to `torch.load`, forci
+ng weights_only=False.
+  checkpoint = torch.load(ckpt_name, map_location = device)
+ckpt name model/unet2d5_bs1_long/unet2d5_bs1_long_best.pt
+promise_40.nii.gz
+promise_20.nii.gz
+promise_44.nii.gz
+promise_45.nii.gz
+promise_41.nii.gz
+promise_48.nii.gz
+promise_10.nii.gz
+promise_31.nii.gz
+promise_15.nii.gz
+the largest component is null
+promise_09.nii.gz
+testing time 0.3631084203720093 +/- 0.05445195968150047

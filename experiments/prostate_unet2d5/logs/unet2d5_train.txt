@@ -1,0 +1,375 @@
+pymic_train : D:\Annaconda\envs\med_ai_310\lib\site-packages\timm\models\layers\__init__.py:49: FutureWarning: Importing from timm.models.layers is deprecated, please import via timm.layers
+At line:1 char:1
++ pymic_train unet2d5_bs1_long.cfg 2>&1 |
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (D:\Annaconda\en...via timm.layers:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+
+  warnings.warn(f"Importing from {__name__} is deprecated, please import via timm.layers", FutureWarning)
+dataset tensor_type float
+dataset task_type seg
+dataset train_dir ../../PyMIC_data/Promise12/preprocess
+dataset train_csv config/data/image_train.csv
+dataset valid_csv config/data/image_valid.csv
+dataset test_csv config/data/image_test_input.csv
+dataset train_batch_size 1
+dataset patch_size [64, 128, 128]
+dataset train_transform [Pad, RandomCrop, RandomFlip, NormalizeWithMeanStd, GammaCorrection, GaussianNoise, LabelToProbability]
+dataset valid_transform [NormalizeWithMeanStd, Pad, LabelToProbability]
+dataset test_transform [NormalizeWithMeanStd, Pad]
+dataset randomflip_flip_depth True
+dataset randomflip_flip_height True
+dataset randomflip_flip_width True
+dataset normalizewithmeanstd_channels [0]
+dataset gammacorrection_channels [0]
+dataset gammacorrection_gamma_min 0.7
+dataset gammacorrection_gamma_max 1.5
+dataset gaussiannoise_channels [0]
+dataset gaussiannoise_mean 0
+dataset gaussiannoise_std 0.05
+dataset gaussiannoise_probability 0.5
+network net_type UNet2D5
+network class_num 2
+network in_chns 1
+network feature_chns [32, 64, 128, 256, 512]
+network dropout [0, 0, 0.2, 0.2, 0.2]
+network conv_dims [2, 2, 3, 3, 3]
+network multiscale_pred True
+training gpus [0]
+training loss_type [DiceLoss, CrossEntropyLoss]
+training loss_weight [1.0, 1.0]
+training deep_supervise True
+training optimizer Adam
+training learning_rate 1e-3
+training momentum 0.9
+training weight_decay 1e-5
+training lr_scheduler PolynomialLR
+training lr_power 0.8
+training early_stop_patience 4000
+training ckpt_dir model/unet2d5_bs1_long
+training iter_max 16000
+training iter_valid 250
+training iter_save 4000
+testing gpus [0]
+testing ckpt_mode 1
+testing output_dir result/unet2d5_bs1_long
+testing post_process KeepLargestComponent
+testing sliding_window_enable True
+testing sliding_window_size [64, 128, 128]
+testing sliding_window_stride [64, 128, 128]
+The running configuations are:
+[dataset]
+tensor_type = float
+task_type = TaskType.SEGMENTATION
+train_dir = ../../PyMIC_data/Promise12/preprocess
+train_csv = config/data/image_train.csv
+valid_csv = config/data/image_valid.csv
+test_csv = config/data/image_test_input.csv
+train_batch_size = 1
+patch_size = [64, 128, 128]
+train_transform = ['Pad', 'RandomCrop', 'RandomFlip', 'NormalizeWithMeanStd', 'GammaCorrection', 'GaussianNoise', 'LabelToProbability']
+valid_transform = ['NormalizeWithMeanStd', 'Pad', 'LabelToProbability']
+test_transform = ['NormalizeWithMeanStd', 'Pad']
+randomflip_flip_depth = True
+randomflip_flip_height = True
+randomflip_flip_width = True
+normalizewithmeanstd_channels = [0]
+gammacorrection_channels = [0]
+gammacorrection_gamma_min = 0.7
+gammacorrection_gamma_max = 1.5
+gaussiannoise_channels = [0]
+gaussiannoise_mean = 0
+gaussiannoise_std = 0.05
+gaussiannoise_probability = 0.5
+labeltoprobability_class_num = 2
+pad_output_size = [64, 128, 128]
+randomcrop_output_size = [64, 128, 128]
+[network]
+net_type = UNet2D5
+class_num = 2
+in_chns = 1
+feature_chns = [32, 64, 128, 256, 512]
+dropout = [0, 0, 0.2, 0.2, 0.2]
+conv_dims = [2, 2, 3, 3, 3]
+multiscale_pred = True
+[training]
+gpus = [0]
+loss_type = ['DiceLoss', 'CrossEntropyLoss']
+loss_weight = [1.0, 1.0]
+deep_supervise = True
+optimizer = Adam
+learning_rate = 0.001
+momentum = 0.9
+weight_decay = 1e-05
+lr_scheduler = PolynomialLR
+lr_power = 0.8
+early_stop_patience = 4000
+ckpt_dir = model/unet2d5_bs1_long
+iter_max = 16000
+iter_valid = 250
+iter_save = 4000
+[testing]
+gpus = [0]
+ckpt_mode = 1
+output_dir = result/unet2d5_bs1_long
+post_process = KeepLargestComponent
+sliding_window_enable = True
+sliding_window_size = [64, 128, 128]
+sliding_window_stride = [64, 128, 128]
+
+********** Fully Supervised Learning **********
+
+deterministric is true
+Creating dataset for train
+image/promise_34.nii.gz
+Creating dataset for valid
+image/promise_37.nii.gz
+net_type  = UNet2D5
+class_num  = 2
+in_chns  = 1
+feature_chns  = [32, 64, 128, 256, 512]
+dropout  = [0, 0, 0.2, 0.2, 0.2]
+conv_dims  = [2, 2, 3, 3, 3]
+multiscale_pred  = True
+up_mode  = 2
+net_type UNet2D5
+class_num 2
+in_chns 1
+feature_chns [32, 64, 128, 256, 512]
+dropout [0, 0, 0.2, 0.2, 0.2]
+conv_dims [2, 2, 3, 3, 3]
+multiscale_pred True
+up_mode 2
+parameter number 20957530
+2026-07-17 21:23:07 training start
+
+2026-07-17 21:24:28 it 250
+learning rate 0.001
+training/validation time: 75.39s/6.02s
+train loss 0.4840, avg foreground dice 0.5709 [0.9698 0.5709]
+valid loss 0.4815, avg foreground dice 0.4316 [0.9794 0.4316]
+data: 13.39s, forward: 2.34s, loss: 0.73s, backward: 2.25s
+
+2026-07-17 21:25:52 it 500
+learning rate 0.0009874803456200393
+training/validation time: 77.59s/6.17s
+train loss 0.2465, avg foreground dice 0.7547 [0.9858 0.7547]
+valid loss 0.2199, avg foreground dice 0.7785 [0.9874 0.7785]
+data: 15.55s, forward: 2.14s, loss: 0.70s, backward: 2.29s
+
+2026-07-17 21:27:14 it 750
+learning rate 0.0009749208813096207
+training/validation time: 75.45s/6.09s
+train loss 0.2291, avg foreground dice 0.7782 [0.9865 0.7782]
+valid loss 0.6293, avg foreground dice 0.2573 [0.9736 0.2573]
+data: 13.66s, forward: 2.09s, loss: 0.67s, backward: 2.32s
+
+2026-07-17 21:28:36 it 1000
+learning rate 0.0009623208352433422
+training/validation time: 75.56s/6.13s
+train loss 0.2093, avg foreground dice 0.7971 [0.9875 0.7971]
+valid loss 0.2597, avg foreground dice 0.7317 [0.9857 0.7317]
+data: 13.84s, forward: 2.08s, loss: 0.66s, backward: 2.31s
+
+2026-07-17 21:29:57 it 1250
+learning rate 0.0009496794077102215
+training/validation time: 74.99s/6.16s
+train loss 0.1911, avg foreground dice 0.8087 [0.9888 0.8087]
+valid loss 0.3359, avg foreground dice 0.5929 [0.9822 0.5929]
+data: 13.27s, forward: 2.07s, loss: 0.67s, backward: 2.29s
+
+2026-07-17 21:31:19 it 1500
+learning rate 0.0009369957696237276
+training/validation time: 76.23s/6.27s
+train loss 0.1719, avg foreground dice 0.8269 [0.9900 0.8269]
+valid loss 0.3210, avg foreground dice 0.6660 [0.9841 0.6660]
+data: 14.49s, forward: 2.12s, loss: 0.67s, backward: 2.36s
+
+2026-07-17 21:32:42 it 1750
+learning rate 0.0009242690609255433
+training/validation time: 76.31s/6.16s
+train loss 0.1556, avg foreground dice 0.8400 [0.9911 0.8400]
+valid loss 0.2240, avg foreground dice 0.7672 [0.9872 0.7672]
+data: 14.51s, forward: 2.14s, loss: 0.69s, backward: 2.38s
+
+2026-07-17 21:34:03 it 2000
+learning rate 0.0009114983888735117
+training/validation time: 75.05s/6.15s
+train loss 0.1490, avg foreground dice 0.8471 [0.9918 0.8471]
+valid loss 0.4004, avg foreground dice 0.5577 [0.9818 0.5577]
+data: 13.35s, forward: 2.09s, loss: 0.67s, backward: 2.26s
+
+2026-07-17 21:35:24 it 2250
+learning rate 0.0008986828262031825
+training/validation time: 75.22s/6.16s
+train loss 0.1248, avg foreground dice 0.8700 [0.9934 0.8700]
+valid loss 0.4585, avg foreground dice 0.5089 [0.9822 0.5089]
+data: 13.52s, forward: 2.08s, loss: 0.67s, backward: 2.27s
+
+2026-07-17 21:36:45 it 2500
+learning rate 0.000885821409151192
+training/validation time: 74.84s/6.17s
+train loss 0.1162, avg foreground dice 0.8752 [0.9938 0.8752]
+valid loss 0.1591, avg foreground dice 0.8342 [0.9907 0.8342]
+data: 13.14s, forward: 2.07s, loss: 0.67s, backward: 2.30s
+
+2026-07-17 21:38:07 it 2750
+learning rate 0.0008729131353273895
+training/validation time: 75.63s/6.17s
+train loss 0.1090, avg foreground dice 0.8834 [0.9942 0.8834]
+valid loss 0.3499, avg foreground dice 0.6391 [0.9847 0.6391]
+data: 13.91s, forward: 2.07s, loss: 0.65s, backward: 2.26s
+
+2026-07-17 21:39:29 it 3000
+learning rate 0.000859956961421113
+training/validation time: 75.33s/6.16s
+train loss 0.1013, avg foreground dice 0.8919 [0.9946 0.8919]
+valid loss 0.6333, avg foreground dice 0.3223 [0.9754 0.3223]
+data: 13.63s, forward: 2.08s, loss: 0.68s, backward: 2.30s
+
+2026-07-17 21:40:50 it 3250
+learning rate 0.0008469518007253042
+training/validation time: 75.12s/6.16s
+train loss 0.0916, avg foreground dice 0.9029 [0.9951 0.9029]
+valid loss 0.4666, avg foreground dice 0.4976 [0.9829 0.4976]
+data: 13.41s, forward: 2.07s, loss: 0.67s, backward: 2.27s
+
+2026-07-17 21:42:12 it 3500
+learning rate 0.0008338965204602088
+training/validation time: 75.46s/6.18s
+train loss 0.1344, avg foreground dice 0.8642 [0.9925 0.8642]
+valid loss 0.2246, avg foreground dice 0.7734 [0.9867 0.7734]
+data: 13.75s, forward: 2.07s, loss: 0.66s, backward: 2.30s
+
+2026-07-17 21:43:33 it 3750
+learning rate 0.000820789938876177
+training/validation time: 75.34s/6.11s
+train loss 0.1034, avg foreground dice 0.8918 [0.9945 0.8918]
+valid loss 0.2189, avg foreground dice 0.7737 [0.9883 0.7737]
+data: 13.65s, forward: 2.06s, loss: 0.66s, backward: 2.29s
+
+2026-07-17 21:44:55 it 4000
+learning rate 0.0008076308221125397
+training/validation time: 75.08s/6.10s
+train loss 0.0846, avg foreground dice 0.9104 [0.9955 0.9104]
+valid loss 0.2002, avg foreground dice 0.8119 [0.9886 0.8119]
+data: 13.37s, forward: 2.05s, loss: 0.67s, backward: 2.30s
+
+2026-07-17 21:46:16 it 4250
+learning rate 0.000794417880786609
+training/validation time: 75.42s/6.17s
+train loss 0.0900, avg foreground dice 0.9045 [0.9952 0.9045]
+valid loss 0.1773, avg foreground dice 0.8162 [0.9907 0.8162]
+data: 13.72s, forward: 2.06s, loss: 0.67s, backward: 2.30s
+
+2026-07-17 21:47:38 it 4500
+learning rate 0.0007811497662834967
+training/validation time: 75.58s/5.98s
+NaN or Inf found in input tensor.
+NaN or Inf found in input tensor.
+NaN or Inf found in input tensor.
+NaN or Inf found in input tensor.
+train loss nan, avg foreground dice 0.0516 [0.9737 0.0516]
+valid loss nan, avg foreground dice 0.0000 [0.9690 0.0000]
+data: 14.15s, forward: 2.07s, loss: 0.64s, backward: 2.27s
+
+2026-07-17 21:48:59 it 4750
+learning rate 0.0007678250667135646
+training/validation time: 75.17s/5.99s
+NaN or Inf found in input tensor.
+NaN or Inf found in input tensor.
+NaN or Inf found in input tensor.
+NaN or Inf found in input tensor.
+train loss nan, avg foreground dice 0.0000 [0.9723 0.0000]
+valid loss nan, avg foreground dice 0.0000 [0.9690 0.0000]
+data: 13.82s, forward: 2.05s, loss: 0.66s, backward: 2.25s
+
+2026-07-17 21:50:20 it 5000
+learning rate 0.0007544423024998363
+training/validation time: 75.33s/5.97s
+NaN or Inf found in input tensor.
+NaN or Inf found in input tensor.
+NaN or Inf found in input tensor.
+NaN or Inf found in input tensor.
+train loss nan, avg foreground dice 0.0000 [0.9724 0.0000]
+valid loss nan, avg foreground dice 0.0000 [0.9690 0.0000]
+data: 13.96s, forward: 2.04s, loss: 0.65s, backward: 2.22s
+
+2026-07-17 21:51:41 it 5250
+learning rate 0.0007409999215524989
+training/validation time: 74.61s/5.81s
+NaN or Inf found in input tensor.
+NaN or Inf found in input tensor.
+NaN or Inf found in input tensor.
+NaN or Inf found in input tensor.
+train loss nan, avg foreground dice 0.0000 [0.9725 0.0000]
+valid loss nan, avg foreground dice 0.0000 [0.9690 0.0000]
+data: 13.14s, forward: 1.88s, loss: 0.58s, backward: 1.99s
+
+2026-07-17 21:53:01 it 5500
+learning rate 0.0007274962939815599
+training/validation time: 74.64s/5.80s
+NaN or Inf found in input tensor.
+NaN or Inf found in input tensor.
+NaN or Inf found in input tensor.
+NaN or Inf found in input tensor.
+train loss nan, avg foreground dice 0.0000 [0.9725 0.0000]
+valid loss nan, avg foreground dice 0.0000 [0.9690 0.0000]
+data: 13.23s, forward: 1.85s, loss: 0.57s, backward: 1.97s
+
+2026-07-17 21:54:22 it 5750
+learning rate 0.000713929706291653
+training/validation time: 75.26s/5.72s
+NaN or Inf found in input tensor.
+NaN or Inf found in input tensor.
+NaN or Inf found in input tensor.
+NaN or Inf found in input tensor.
+train loss nan, avg foreground dice 0.0000 [0.9727 0.0000]
+valid loss nan, avg foreground dice 0.0000 [0.9690 0.0000]
+data: 13.80s, forward: 1.89s, loss: 0.57s, backward: 1.98s
+
+2026-07-17 21:55:43 it 6000
+learning rate 0.0007002983549946925
+training/validation time: 75.11s/5.74s
+NaN or Inf found in input tensor.
+NaN or Inf found in input tensor.
+NaN or Inf found in input tensor.
+NaN or Inf found in input tensor.
+train loss nan, avg foreground dice 0.0000 [0.9719 0.0000]
+valid loss nan, avg foreground dice 0.0000 [0.9690 0.0000]
+data: 13.64s, forward: 1.89s, loss: 0.58s, backward: 2.01s
+
+2026-07-17 21:57:04 it 6250
+learning rate 0.0006866003395663235
+training/validation time: 74.97s/5.75s
+NaN or Inf found in input tensor.
+NaN or Inf found in input tensor.
+NaN or Inf found in input tensor.
+NaN or Inf found in input tensor.
+train loss nan, avg foreground dice 0.0000 [0.9723 0.0000]
+valid loss nan, avg foreground dice 0.0000 [0.9690 0.0000]
+data: 13.52s, forward: 1.91s, loss: 0.60s, backward: 2.04s
+
+2026-07-17 21:58:25 it 6500
+learning rate 0.0006728336546605988
+training/validation time: 75.17s/5.74s
+NaN or Inf found in input tensor.
+NaN or Inf found in input tensor.
+NaN or Inf found in input tensor.
+NaN or Inf found in input tensor.
+train loss nan, avg foreground dice 0.0000 [0.9730 0.0000]
+valid loss nan, avg foreground dice 0.0000 [0.9690 0.0000]
+data: 13.75s, forward: 1.86s, loss: 0.58s, backward: 1.99s
+
+2026-07-17 21:59:47 it 6750
+learning rate 0.0006589961814836706
+training/validation time: 76.57s/6.10s
+NaN or Inf found in input tensor.
+NaN or Inf found in input tensor.
+NaN or Inf found in input tensor.
+NaN or Inf found in input tensor.
+train loss nan, avg foreground dice 0.0000 [0.9727 0.0000]
+valid loss nan, avg foreground dice 0.0000 [0.9690 0.0000]
+data: 14.88s, forward: 2.00s, loss: 0.63s, backward: 2.15s
+The training is early stopped
+The best performing iter is 2500, valid dice 0.8342267274856567
